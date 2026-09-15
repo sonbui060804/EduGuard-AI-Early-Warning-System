@@ -242,3 +242,7 @@ Tóm tắt phân tích: phân bố lệch phải mạnh, tới 34,7, dẫn tới
   - *“Vì sao dùng ClickHouse mà không phải pandas/Spark?”* → “File 10,6 triệu dòng nạp cả vào pandas tốn vài GB RAM mỗi lần hỏi; ClickHouse-local chạy SQL thẳng trên đĩa, không cần server, dưới một giây; Spark thì quá nặng cho một laptop. Mọi con số đều tái lập bằng notebook.”
 - **Câu chuyển người** đã có sẵn ở cuối mỗi phần; nói rõ tên người kế tiếp để mạch liền mạch. Trang **Outline** và **Mục lục**: chỉ lướt, dùng làm nhịp chuyển.
 
+
+
+### Phase 3: Kế hoạch Can thiệp (Actionable Recourse)
+Hệ thống không chỉ dừng lại ở cảnh báo (Phase 1) và giải thích (Phase 2), mà còn tiến tới "kê đơn thuốc" (Phase 3). Dựa trên thuật toán Counterfactual, hệ thống đề xuất các phương án hành động (ví dụ: cần tăng bao nhiêu click, nộp thêm bài nào) nhắm riêng vào các biến hành vi có thể thay đổi được, giúp sinh viên có đường lối rõ ràng để vượt qua mức an toàn.

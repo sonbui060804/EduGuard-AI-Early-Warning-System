@@ -194,3 +194,7 @@
 ---
 
 *File slide: `reports/slides/Paper_Talk_EN.pdf` — build lại: `tectonic reports/slides/Paper_Talk_EN.tex`.*
+
+
+### Phase 3: Kế hoạch Can thiệp (Actionable Recourse)
+Hệ thống không chỉ dừng lại ở cảnh báo (Phase 1) và giải thích (Phase 2), mà còn tiến tới "kê đơn thuốc" (Phase 3). Dựa trên thuật toán Counterfactual, hệ thống đề xuất các phương án hành động (ví dụ: cần tăng bao nhiêu click, nộp thêm bài nào) nhắm riêng vào các biến hành vi có thể thay đổi được, giúp sinh viên có đường lối rõ ràng để vượt qua mức an toàn.

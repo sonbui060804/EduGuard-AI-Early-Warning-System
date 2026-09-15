@@ -294,3 +294,7 @@ python -m tools.build_docx
 ---
 
 *Sổ tay do phiên làm việc 2026-07-12 tổng hợp; nhật ký thô: `_process_log_2026-07-12.md`; mọi số liệu trích từ `reports/tables/*.csv` — chạy lại được.*
+
+
+### Phase 3: Kế hoạch Can thiệp (Actionable Recourse)
+Hệ thống không chỉ dừng lại ở cảnh báo (Phase 1) và giải thích (Phase 2), mà còn tiến tới "kê đơn thuốc" (Phase 3). Dựa trên thuật toán Counterfactual, hệ thống đề xuất các phương án hành động (ví dụ: cần tăng bao nhiêu click, nộp thêm bài nào) nhắm riêng vào các biến hành vi có thể thay đổi được, giúp sinh viên có đường lối rõ ràng để vượt qua mức an toàn.
