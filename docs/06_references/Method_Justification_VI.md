@@ -1,69 +1,70 @@
-# Luận Giải Dựa Trên Bằng Chứng Cho Các Lựa Chọn Phương Pháp Nghiên Cứu
+﻿# Luáº­n Giáº£i Dá»±a TrÃªn Báº±ng Chá»©ng Cho CÃ¡c Lá»±a Chá»n PhÆ°Æ¡ng PhÃ¡p NghiÃªn Cá»©u
 
-**Phụ đề:** Cơ sở lý luận cho các quyết định thiết kế chính trong quy trình dự đoán sinh viên có nguy cơ bỏ học
+**Phá»¥ Ä‘á»:** CÆ¡ sá»Ÿ lÃ½ luáº­n cho cÃ¡c quyáº¿t Ä‘á»‹nh thiáº¿t káº¿ chÃ­nh trong quy trÃ¬nh dá»± Ä‘oÃ¡n sinh viÃªn cÃ³ nguy cÆ¡ bá» há»c
 
-**DSP391m – Nhóm 5 · Báo cáo 2 (Nhiệm vụ Dữ liệu), Chương 3 · Hạng mục công việc STT 25 (Vinh)**
-
----
-
-## 1. Tại Sao Các Điểm Kiểm Tra Ở Mức 40–60% Độ Dài Khóa Học Là Thời Điểm Dự Đoán Sớm Đáng Tin Cậy
-
-Một trong những quyết định quan trọng nhất của hệ thống cảnh báo sớm là *thời điểm* thực hiện dự đoán. Can thiệp quá muộn mang lại ít lợi ích; dự đoán quá sớm lại dẫn đến độ không chắc chắn cao. Adnan và cộng sự [1] đã đánh giá có hệ thống độ chính xác dự đoán tại nhiều thời điểm khác nhau trong suốt tiến trình khóa học và phát hiện rằng khoảng thời gian từ 40–60% độ dài khóa học thể hiện sự cân bằng thực tiễn tối ưu: đã tích lũy đủ dữ liệu hoạt động của sinh viên để tạo ra các dự đoán ổn định, đồng thời vẫn còn đủ thời gian để giảng viên triển khai hỗ trợ có ý nghĩa. Do đó, quy trình của nhóm xác định **sáu** điểm kiểm tra nhận thức thời gian (time-aware checkpoint) — 10 / 20 / 40 / 60 / 80 / 100% độ dài khóa học — và lấy **vùng 40–60%** làm điểm đánh giá chính, khả thi nhất cho can thiệp sớm. Lựa chọn này trực tiếp trả lời **RQ1** (điểm kiểm tra sớm nhất đáng tin cậy và thuật toán tốt nhất) bằng cách neo lịch kiểm tra vào bằng chứng thực nghiệm thay vì các ngày tùy ý trên lịch.
-
-*Tài liệu tham khảo hỗ trợ: [1]*
+**DSP391m â€“ NhÃ³m 5 Â· BÃ¡o cÃ¡o 2 (Nhiá»‡m vá»¥ Dá»¯ liá»‡u), ChÆ°Æ¡ng 3 Â· Háº¡ng má»¥c cÃ´ng viá»‡c STT 25 (Vinh)**
 
 ---
 
-## 2. Tại Sao Đặc Trưng Mức Độ Tương Tác Và Kết Quả Đánh Giá Được Ưu Tiên Hơn Đặc Trưng Nhân Khẩu Học
+## 1. Táº¡i Sao CÃ¡c Äiá»ƒm Kiá»ƒm Tra á»ž Má»©c 40â€“60% Äá»™ DÃ i KhÃ³a Há»c LÃ  Thá»i Äiá»ƒm Dá»± ÄoÃ¡n Sá»›m ÄÃ¡ng Tin Cáº­y
 
-Lựa chọn đặc trưng (feature selection) trong khai thác dữ liệu giáo dục phải được hướng dẫn bởi bằng chứng về tính giá trị dự đoán. Tomasevic và cộng sự [2] đã so sánh nhiều kỹ thuật học máy (machine learning) có giám sát để dự đoán kết quả học tập sinh viên trên OULAD và phát hiện rằng các chỉ số mức độ tương tác — đặc biệt là nhật ký tương tác với Môi trường Học tập Ảo (VLE — Virtual Learning Environment), tức dữ liệu luồng nhấp chuột (clickstream) — và điểm số đánh giá trung gian mang tín hiệu dự đoán cao. Ngược lại, các thuộc tính nhân khẩu học (demographic) như nhóm tuổi, khu vực và trình độ học vấn cao nhất trước đây đóng góp tương đối ít giá trị dự đoán bổ sung khi các đặc trưng hành vi và kết quả học tập đã được đưa vào mô hình.
+Má»™t trong nhá»¯ng quyáº¿t Ä‘á»‹nh quan trá»ng nháº¥t cá»§a há»‡ thá»‘ng cáº£nh bÃ¡o sá»›m lÃ  *thá»i Ä‘iá»ƒm* thá»±c hiá»‡n dá»± Ä‘oÃ¡n. Can thiá»‡p quÃ¡ muá»™n mang láº¡i Ã­t lá»£i Ã­ch; dá»± Ä‘oÃ¡n quÃ¡ sá»›m láº¡i dáº«n Ä‘áº¿n Ä‘á»™ khÃ´ng cháº¯c cháº¯n cao. Adnan vÃ  cá»™ng sá»± [1] Ä‘Ã£ Ä‘Ã¡nh giÃ¡ cÃ³ há»‡ thá»‘ng Ä‘á»™ chÃ­nh xÃ¡c dá»± Ä‘oÃ¡n táº¡i nhiá»u thá»i Ä‘iá»ƒm khÃ¡c nhau trong suá»‘t tiáº¿n trÃ¬nh khÃ³a há»c vÃ  phÃ¡t hiá»‡n ráº±ng khoáº£ng thá»i gian tá»« 40â€“60% Ä‘á»™ dÃ i khÃ³a há»c thá»ƒ hiá»‡n sá»± cÃ¢n báº±ng thá»±c tiá»…n tá»‘i Æ°u: Ä‘Ã£ tÃ­ch lÅ©y Ä‘á»§ dá»¯ liá»‡u hoáº¡t Ä‘á»™ng cá»§a sinh viÃªn Ä‘á»ƒ táº¡o ra cÃ¡c dá»± Ä‘oÃ¡n á»•n Ä‘á»‹nh, Ä‘á»“ng thá»i váº«n cÃ²n Ä‘á»§ thá»i gian Ä‘á»ƒ giáº£ng viÃªn triá»ƒn khai há»— trá»£ cÃ³ Ã½ nghÄ©a. Do Ä‘Ã³, quy trÃ¬nh cá»§a nhÃ³m xÃ¡c Ä‘á»‹nh **sÃ¡u** Ä‘iá»ƒm kiá»ƒm tra nháº­n thá»©c thá»i gian (time-aware checkpoint) â€” 10 / 20 / 40 / 60 / 80 / 100% Ä‘á»™ dÃ i khÃ³a há»c â€” vÃ  láº¥y **vÃ¹ng 40â€“60%** lÃ m Ä‘iá»ƒm Ä‘Ã¡nh giÃ¡ chÃ­nh, kháº£ thi nháº¥t cho can thiá»‡p sá»›m. Lá»±a chá»n nÃ y trá»±c tiáº¿p tráº£ lá»i **RQ1** (Ä‘iá»ƒm kiá»ƒm tra sá»›m nháº¥t Ä‘Ã¡ng tin cáº­y vÃ  thuáº­t toÃ¡n tá»‘t nháº¥t) báº±ng cÃ¡ch neo lá»‹ch kiá»ƒm tra vÃ o báº±ng chá»©ng thá»±c nghiá»‡m thay vÃ¬ cÃ¡c ngÃ y tÃ¹y Ã½ trÃªn lá»‹ch.
 
-Trong dự án này, bộ dữ liệu OULAD [3] cung cấp bản ghi clickstream VLE phong phú (tổng số và số lượng theo ngày của các tương tác tài nguyên) và kết quả đánh giá (TMA/CMA). Đây là các nhóm đặc trưng cốt lõi, trong khi các trường nhân khẩu học được giữ lại nhưng không được ưu tiên. Thiết kế này tránh xây dựng mô hình mà các quyết định của nó dựa vào các đặc điểm được bảo vệ, thay vào đó neo các dự đoán vào các hành động của người học có thể quan sát trực tiếp và có ý nghĩa giáo dục.
-
-*Tài liệu tham khảo hỗ trợ: [2], [3]*
+*TÃ i liá»‡u tham kháº£o há»— trá»£: [1]*
 
 ---
 
-## 3. Tại Sao PR-AUC Và Recall Được Chọn Thay Cho Accuracy Làm Chỉ Số Chính
+## 2. Táº¡i Sao Äáº·c TrÆ°ng Má»©c Äá»™ TÆ°Æ¡ng TÃ¡c VÃ  Káº¿t Quáº£ ÄÃ¡nh GiÃ¡ ÄÆ°á»£c Æ¯u TiÃªn HÆ¡n Äáº·c TrÆ°ng NhÃ¢n Kháº©u Há»c
 
-Biến mục tiêu trong dự án này là `at_risk` (có nguy cơ), được định nghĩa là những sinh viên có kết quả cuối kỳ là *Fail* (Trượt) hoặc *Withdrawn* (Rút lui), đối lập với *Pass* (Đạt) hoặc *Distinction* (Xuất sắc) (không có nguy cơ). Dựa trên bộ dữ liệu OULAD, tỷ lệ `at_risk` quan sát được là khoảng **52,8%**, khiến sự mất cân bằng lớp (class imbalance) là nhẹ chứ không nghiêm trọng. Vì cả hai lớp được đại diện ở mức gần tương đương, Accuracy (Độ chính xác tổng thể) sẽ không gây hiểu lầm nghiêm trọng theo nghĩa tổng quan; tuy nhiên, nó vẫn là một chỉ số sơ cấp không phù hợp cho trường hợp sử dụng này vì một lý do khái niệm: một âm tính giả (dự đoán *không có nguy cơ* trong khi sinh viên thực sự sẽ trượt hoặc rút lui) mang chi phí sư phạm lớn hơn nhiều so với một dương tính giả. Chi phí can thiệp của việc đưa ra cảnh báo không cần thiết là thấp; chi phí bỏ lỡ một sinh viên đang gặp khó khăn là cao.
+Lá»±a chá»n Ä‘áº·c trÆ°ng (feature selection) trong khai thÃ¡c dá»¯ liá»‡u giÃ¡o dá»¥c pháº£i Ä‘Æ°á»£c hÆ°á»›ng dáº«n bá»Ÿi báº±ng chá»©ng vá» tÃ­nh giÃ¡ trá»‹ dá»± Ä‘oÃ¡n. Tomasevic vÃ  cá»™ng sá»± [2] Ä‘Ã£ so sÃ¡nh nhiá»u ká»¹ thuáº­t há»c mÃ¡y (machine learning) cÃ³ giÃ¡m sÃ¡t Ä‘á»ƒ dá»± Ä‘oÃ¡n káº¿t quáº£ há»c táº­p sinh viÃªn trÃªn OULAD vÃ  phÃ¡t hiá»‡n ráº±ng cÃ¡c chá»‰ sá»‘ má»©c Ä‘á»™ tÆ°Æ¡ng tÃ¡c â€” Ä‘áº·c biá»‡t lÃ  nháº­t kÃ½ tÆ°Æ¡ng tÃ¡c vá»›i MÃ´i trÆ°á»ng Há»c táº­p áº¢o (VLE â€” Virtual Learning Environment), tá»©c dá»¯ liá»‡u luá»“ng nháº¥p chuá»™t (clickstream) â€” vÃ  Ä‘iá»ƒm sá»‘ Ä‘Ã¡nh giÃ¡ trung gian mang tÃ­n hiá»‡u dá»± Ä‘oÃ¡n cao. NgÆ°á»£c láº¡i, cÃ¡c thuá»™c tÃ­nh nhÃ¢n kháº©u há»c (demographic) nhÆ° nhÃ³m tuá»•i, khu vá»±c vÃ  trÃ¬nh Ä‘á»™ há»c váº¥n cao nháº¥t trÆ°á»›c Ä‘Ã¢y Ä‘Ã³ng gÃ³p tÆ°Æ¡ng Ä‘á»‘i Ã­t giÃ¡ trá»‹ dá»± Ä‘oÃ¡n bá»• sung khi cÃ¡c Ä‘áº·c trÆ°ng hÃ nh vi vÃ  káº¿t quáº£ há»c táº­p Ä‘Ã£ Ä‘Æ°á»£c Ä‘Æ°a vÃ o mÃ´ hÃ¬nh.
 
-Recall (Độ nhạy — Sensitivity) định lượng tỷ lệ sinh viên `at_risk` thực sự được xác định thành công, ánh xạ trực tiếp vào mục tiêu vận hành. PR-AUC (Diện tích dưới đường cong Precision-Recall) tóm tắt sự đánh đổi qua tất cả các ngưỡng quyết định và là chỉ số được khuyến nghị khi lớp dương — dù chỉ là lớp thiểu số nhẹ — là lớp được quan tâm [6]. Sử dụng accuracy làm chỉ số sơ cấp sẽ cho phép một mô hình trông có vẻ tốt trong khi vẫn bỏ lỡ nhiều sinh viên có nguy cơ.
+Trong dá»± Ã¡n nÃ y, bá»™ dá»¯ liá»‡u OULAD [3] cung cáº¥p báº£n ghi clickstream VLE phong phÃº (tá»•ng sá»‘ vÃ  sá»‘ lÆ°á»£ng theo ngÃ y cá»§a cÃ¡c tÆ°Æ¡ng tÃ¡c tÃ i nguyÃªn) vÃ  káº¿t quáº£ Ä‘Ã¡nh giÃ¡ (TMA/CMA). ÄÃ¢y lÃ  cÃ¡c nhÃ³m Ä‘áº·c trÆ°ng cá»‘t lÃµi, trong khi cÃ¡c trÆ°á»ng nhÃ¢n kháº©u há»c Ä‘Æ°á»£c giá»¯ láº¡i nhÆ°ng khÃ´ng Ä‘Æ°á»£c Æ°u tiÃªn. Thiáº¿t káº¿ nÃ y trÃ¡nh xÃ¢y dá»±ng mÃ´ hÃ¬nh mÃ  cÃ¡c quyáº¿t Ä‘á»‹nh cá»§a nÃ³ dá»±a vÃ o cÃ¡c Ä‘áº·c Ä‘iá»ƒm Ä‘Æ°á»£c báº£o vá»‡, thay vÃ o Ä‘Ã³ neo cÃ¡c dá»± Ä‘oÃ¡n vÃ o cÃ¡c hÃ nh Ä‘á»™ng cá»§a ngÆ°á»i há»c cÃ³ thá»ƒ quan sÃ¡t trá»±c tiáº¿p vÃ  cÃ³ Ã½ nghÄ©a giÃ¡o dá»¥c.
 
-Mặc dù sự mất cân bằng là nhẹ, **RQ3** vẫn điều tra rõ ràng liệu các kỹ thuật lấy mẫu lại như SMOTE (Synthetic Minority Over-sampling Technique), ADASYN (Adaptive Synthetic Sampling) và điều chỉnh trọng số lớp (class-weighting) có cải thiện thêm Recall và PR-AUC hay không. Phát hiện về sự mất cân bằng nhẹ không loại bỏ sự cần thiết phải nghiên cứu các kỹ thuật này; nó chỉ có nghĩa là lợi ích cận biên của chúng có thể nhỏ hơn so với các thiết lập bị lệch nghiêm trọng — một kết quả đáng báo cáo bằng thực nghiệm. Chawla và cộng sự [6] giới thiệu SMOTE như một kỹ thuật lấy mẫu quá mức (over-sampling) có nguyên tắc, đó là lý do tại sao nó đóng vai trò là kỹ thuật tham chiếu trong RQ3.
-
-*Tài liệu tham khảo hỗ trợ: [6]*
+*TÃ i liá»‡u tham kháº£o há»— trá»£: [2], [3]*
 
 ---
 
-## 4. Tại Sao Cần Phân Chia Dữ Liệu Có Nhận Thức Nhóm, Phân Tầng Với Tập Kiểm Tra Cố Định
+## 3. Táº¡i Sao PR-AUC VÃ  Recall ÄÆ°á»£c Chá»n Thay Cho Accuracy LÃ m Chá»‰ Sá»‘ ChÃ­nh
 
-Các bản ghi sinh viên trong OULAD chứa nhiều lần trình bày mô-đun (module presentation) trên mỗi sinh viên (`id_student`). Nếu các bản ghi của cùng một sinh viên xuất hiện trong cả tập huấn luyện và tập kiểm tra, mô hình có thể học các đặc điểm riêng lẻ thay vì các quy luật tổng quát hóa — một dạng *rò rỉ nhóm* (group leakage) làm tăng giả tạo hiệu suất trên tập dữ liệu giữ lại. Để ngăn chặn điều này, việc phân chia huấn luyện/xác nhận/kiểm tra phải được thực hiện ở cấp độ sinh viên (nhóm theo `id_student`) sao cho tất cả các bản ghi của một sinh viên nhất định nằm hoàn toàn trong một phân vùng.
+Biáº¿n má»¥c tiÃªu trong dá»± Ã¡n nÃ y lÃ  `at_risk` (cÃ³ nguy cÆ¡), Ä‘Æ°á»£c Ä‘á»‹nh nghÄ©a lÃ  nhá»¯ng sinh viÃªn cÃ³ káº¿t quáº£ cuá»‘i ká»³ lÃ  *Fail* (TrÆ°á»£t) hoáº·c *Withdrawn* (RÃºt lui), Ä‘á»‘i láº­p vá»›i *Pass* (Äáº¡t) hoáº·c *Distinction* (Xuáº¥t sáº¯c) (khÃ´ng cÃ³ nguy cÆ¡). Dá»±a trÃªn bá»™ dá»¯ liá»‡u OULAD, tá»· lá»‡ `at_risk` quan sÃ¡t Ä‘Æ°á»£c lÃ  khoáº£ng **52,8%**, khiáº¿n sá»± máº¥t cÃ¢n báº±ng lá»›p (class imbalance) lÃ  nháº¹ chá»© khÃ´ng nghiÃªm trá»ng. VÃ¬ cáº£ hai lá»›p Ä‘Æ°á»£c Ä‘áº¡i diá»‡n á»Ÿ má»©c gáº§n tÆ°Æ¡ng Ä‘Æ°Æ¡ng, Accuracy (Äá»™ chÃ­nh xÃ¡c tá»•ng thá»ƒ) sáº½ khÃ´ng gÃ¢y hiá»ƒu láº§m nghiÃªm trá»ng theo nghÄ©a tá»•ng quan; tuy nhiÃªn, nÃ³ váº«n lÃ  má»™t chá»‰ sá»‘ sÆ¡ cáº¥p khÃ´ng phÃ¹ há»£p cho trÆ°á»ng há»£p sá»­ dá»¥ng nÃ y vÃ¬ má»™t lÃ½ do khÃ¡i niá»‡m: má»™t Ã¢m tÃ­nh giáº£ (dá»± Ä‘oÃ¡n *khÃ´ng cÃ³ nguy cÆ¡* trong khi sinh viÃªn thá»±c sá»± sáº½ trÆ°á»£t hoáº·c rÃºt lui) mang chi phÃ­ sÆ° pháº¡m lá»›n hÆ¡n nhiá»u so vá»›i má»™t dÆ°Æ¡ng tÃ­nh giáº£. Chi phÃ­ can thiá»‡p cá»§a viá»‡c Ä‘Æ°a ra cáº£nh bÃ¡o khÃ´ng cáº§n thiáº¿t lÃ  tháº¥p; chi phÃ­ bá» lá»¡ má»™t sinh viÃªn Ä‘ang gáº·p khÃ³ khÄƒn lÃ  cao.
 
-Ngoài việc ngăn ngừa rò rỉ, dự án đánh giá dự đoán tại sáu điểm kiểm tra theo thời gian (10–100% độ dài khóa học). Giữ tập kiểm tra cố định qua tất cả các mốc đảm bảo rằng các so sánh hiệu suất được thực hiện trên cùng một tổng thể, bảo toàn tính hợp lệ của các kiểm định thống kê bắt cặp và so sánh xuyên điểm kiểm tra. Phân tầng (stratification) theo nhãn `at_risk` trong phân chia ở cấp độ nhóm duy trì tỷ lệ dương tính khoảng 52,8% trong mỗi phân vùng, ngăn ngừa sự mất cân bằng ngẫu nhiên do chính việc phân chia gây ra.
+Recall (Äá»™ nháº¡y â€” Sensitivity) Ä‘á»‹nh lÆ°á»£ng tá»· lá»‡ sinh viÃªn `at_risk` thá»±c sá»± Ä‘Æ°á»£c xÃ¡c Ä‘á»‹nh thÃ nh cÃ´ng, Ã¡nh xáº¡ trá»±c tiáº¿p vÃ o má»¥c tiÃªu váº­n hÃ nh. PR-AUC (Diá»‡n tÃ­ch dÆ°á»›i Ä‘Æ°á»ng cong Precision-Recall) tÃ³m táº¯t sá»± Ä‘Ã¡nh Ä‘á»•i qua táº¥t cáº£ cÃ¡c ngÆ°á»¡ng quyáº¿t Ä‘á»‹nh vÃ  lÃ  chá»‰ sá»‘ Ä‘Æ°á»£c khuyáº¿n nghá»‹ khi lá»›p dÆ°Æ¡ng â€” dÃ¹ chá»‰ lÃ  lá»›p thiá»ƒu sá»‘ nháº¹ â€” lÃ  lá»›p Ä‘Æ°á»£c quan tÃ¢m [6]. Sá»­ dá»¥ng accuracy lÃ m chá»‰ sá»‘ sÆ¡ cáº¥p sáº½ cho phÃ©p má»™t mÃ´ hÃ¬nh trÃ´ng cÃ³ váº» tá»‘t trong khi váº«n bá» lá»¡ nhiá»u sinh viÃªn cÃ³ nguy cÆ¡.
 
-*Thiết kế này là thông lệ tiêu chuẩn trong tài liệu kiểm định chéo có nhóm (grouped cross-validation) và là yêu cầu bắt buộc để đảm bảo tính toàn vẹn của RQ1 và RQ2.*
+Máº·c dÃ¹ sá»± máº¥t cÃ¢n báº±ng lÃ  nháº¹, **RQ3** váº«n Ä‘iá»u tra rÃµ rÃ ng liá»‡u cÃ¡c ká»¹ thuáº­t láº¥y máº«u láº¡i nhÆ° SMOTE (Synthetic Minority Over-sampling Technique), ADASYN (Adaptive Synthetic Sampling) vÃ  Ä‘iá»u chá»‰nh trá»ng sá»‘ lá»›p (class-weighting) cÃ³ cáº£i thiá»‡n thÃªm Recall vÃ  PR-AUC hay khÃ´ng. PhÃ¡t hiá»‡n vá» sá»± máº¥t cÃ¢n báº±ng nháº¹ khÃ´ng loáº¡i bá» sá»± cáº§n thiáº¿t pháº£i nghiÃªn cá»©u cÃ¡c ká»¹ thuáº­t nÃ y; nÃ³ chá»‰ cÃ³ nghÄ©a lÃ  lá»£i Ã­ch cáº­n biÃªn cá»§a chÃºng cÃ³ thá»ƒ nhá» hÆ¡n so vá»›i cÃ¡c thiáº¿t láº­p bá»‹ lá»‡ch nghiÃªm trá»ng â€” má»™t káº¿t quáº£ Ä‘Ã¡ng bÃ¡o cÃ¡o báº±ng thá»±c nghiá»‡m. Chawla vÃ  cá»™ng sá»± [6] giá»›i thiá»‡u SMOTE nhÆ° má»™t ká»¹ thuáº­t láº¥y máº«u quÃ¡ má»©c (over-sampling) cÃ³ nguyÃªn táº¯c, Ä‘Ã³ lÃ  lÃ½ do táº¡i sao nÃ³ Ä‘Ã³ng vai trÃ² lÃ  ká»¹ thuáº­t tham chiáº¿u trong RQ3.
 
----
-
-## 5. Tại Sao Độ Ổn Định Giải Thích Cần Một Chỉ Số Định Lượng
-
-SHAP (SHapley Additive exPlanations) và LIME (Local Interpretable Model-agnostic Explanations) là hai phương pháp giải thích hậu kỳ (post-hoc explanation) được triển khai phổ biến nhất trong phân tích học thuật giáo dục. Tuy nhiên, Gunasekara và Saarela [4] đã đánh giá tình trạng của XAI (Explainable Artificial Intelligence — Trí tuệ Nhân tạo Có thể Giải thích) trong giáo dục và xác định một khoảng trống quan trọng: trong khi so sánh định tính về xếp hạng tầm quan trọng đặc trưng là phổ biến, việc đo lường định lượng nghiêm ngặt về độ ổn định giải thích — mức độ nhất quán mà một phương pháp giải thích gán cùng một thứ tự tầm quan trọng qua các lần chạy lặp lại, đầu vào bị nhiễu, hoặc các sinh viên tương tự — phần lớn vắng mặt trong tài liệu. Một kiểm tra trực quan hoặc dựa trên xếp hạng thuần túy không thể phát hiện các bất ổn định tinh tế làm suy yếu niềm tin vào các giải thích được cung cấp cho giảng viên.
-
-Do đó, **RQ2** giới thiệu một chỉ số ổn định định lượng (ví dụ: tương quan thứ hạng của tầm quan trọng đặc trưng SHAP qua các lần lấy mẫu bootstrap, hoặc độ tương đồng Jaccard của các đặc trưng top-k LIME) và so sánh SHAP với LIME trên chiều đó. Điều này trực tiếp giải quyết khoảng trống phương pháp được xác định trong [4] và tạo ra kết quả có thể tái tạo và so sánh được trong các nghiên cứu tương lai.
-
-*Tài liệu tham khảo hỗ trợ: [4]*
+*TÃ i liá»‡u tham kháº£o há»— trá»£: [6]*
 
 ---
 
-## Tài Liệu Tham Khảo
+## 4. Táº¡i Sao Cáº§n PhÃ¢n Chia Dá»¯ Liá»‡u CÃ³ Nháº­n Thá»©c NhÃ³m, PhÃ¢n Táº§ng Vá»›i Táº­p Kiá»ƒm Tra Cá»‘ Äá»‹nh
 
-[1] M. Adnan và cộng sự, "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, tập 9, tr. 7519–7539, 2021.
+CÃ¡c báº£n ghi sinh viÃªn trong OULAD chá»©a nhiá»u láº§n trÃ¬nh bÃ y mÃ´-Ä‘un (module presentation) trÃªn má»—i sinh viÃªn (`id_student`). Náº¿u cÃ¡c báº£n ghi cá»§a cÃ¹ng má»™t sinh viÃªn xuáº¥t hiá»‡n trong cáº£ táº­p huáº¥n luyá»‡n vÃ  táº­p kiá»ƒm tra, mÃ´ hÃ¬nh cÃ³ thá»ƒ há»c cÃ¡c Ä‘áº·c Ä‘iá»ƒm riÃªng láº» thay vÃ¬ cÃ¡c quy luáº­t tá»•ng quÃ¡t hÃ³a â€” má»™t dáº¡ng *rÃ² rá»‰ nhÃ³m* (group leakage) lÃ m tÄƒng giáº£ táº¡o hiá»‡u suáº¥t trÃªn táº­p dá»¯ liá»‡u giá»¯ láº¡i. Äá»ƒ ngÄƒn cháº·n Ä‘iá»u nÃ y, viá»‡c phÃ¢n chia huáº¥n luyá»‡n/xÃ¡c nháº­n/kiá»ƒm tra pháº£i Ä‘Æ°á»£c thá»±c hiá»‡n á»Ÿ cáº¥p Ä‘á»™ sinh viÃªn (nhÃ³m theo `id_student`) sao cho táº¥t cáº£ cÃ¡c báº£n ghi cá»§a má»™t sinh viÃªn nháº¥t Ä‘á»‹nh náº±m hoÃ n toÃ n trong má»™t phÃ¢n vÃ¹ng.
 
-[2] N. Tomasevic, N. Gvozdenovic và S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Education*, tập 143, tr. 103676, 2020.
+NgoÃ i viá»‡c ngÄƒn ngá»«a rÃ² rá»‰, dá»± Ã¡n Ä‘Ã¡nh giÃ¡ dá»± Ä‘oÃ¡n táº¡i sÃ¡u Ä‘iá»ƒm kiá»ƒm tra theo thá»i gian (10â€“100% Ä‘á»™ dÃ i khÃ³a há»c). Giá»¯ táº­p kiá»ƒm tra cá»‘ Ä‘á»‹nh qua táº¥t cáº£ cÃ¡c má»‘c Ä‘áº£m báº£o ráº±ng cÃ¡c so sÃ¡nh hiá»‡u suáº¥t Ä‘Æ°á»£c thá»±c hiá»‡n trÃªn cÃ¹ng má»™t tá»•ng thá»ƒ, báº£o toÃ n tÃ­nh há»£p lá»‡ cá»§a cÃ¡c kiá»ƒm Ä‘á»‹nh thá»‘ng kÃª báº¯t cáº·p vÃ  so sÃ¡nh xuyÃªn Ä‘iá»ƒm kiá»ƒm tra. PhÃ¢n táº§ng (stratification) theo nhÃ£n `at_risk` trong phÃ¢n chia á»Ÿ cáº¥p Ä‘á»™ nhÃ³m duy trÃ¬ tá»· lá»‡ dÆ°Æ¡ng tÃ­nh khoáº£ng 52,8% trong má»—i phÃ¢n vÃ¹ng, ngÄƒn ngá»«a sá»± máº¥t cÃ¢n báº±ng ngáº«u nhiÃªn do chÃ­nh viá»‡c phÃ¢n chia gÃ¢y ra.
 
-[3] J. Kuzilek, M. Hlosta và Z. Zdrahal, "Open University Learning Analytics Dataset," *Scientific Data*, tập 4, tr. 170171, 2017.
+*Thiáº¿t káº¿ nÃ y lÃ  thÃ´ng lá»‡ tiÃªu chuáº©n trong tÃ i liá»‡u kiá»ƒm Ä‘á»‹nh chÃ©o cÃ³ nhÃ³m (grouped cross-validation) vÃ  lÃ  yÃªu cáº§u báº¯t buá»™c Ä‘á»ƒ Ä‘áº£m báº£o tÃ­nh toÃ n váº¹n cá»§a RQ1 vÃ  RQ2.*
 
-[4] S. Gunasekara và M. Saarela, "Explainable AI in Education: Techniques and Qualitative Assessment," *Applied Sciences*, vol. 15, no. 3, art. 1239, 2025.
+---
 
-[6] N. V. Chawla, K. W. Bowyer, L. O. Hall và W. P. Kegelmeyer, "SMOTE: Synthetic Minority Over-sampling Technique," *Journal of Artificial Intelligence Research*, tập 16, tr. 321–357, 2002.
+## 5. Táº¡i Sao Äá»™ á»”n Äá»‹nh Giáº£i ThÃ­ch Cáº§n Má»™t Chá»‰ Sá»‘ Äá»‹nh LÆ°á»£ng
+
+SHAP (SHapley Additive exPlanations) vÃ  LIME (Local Interpretable Model-agnostic Explanations) lÃ  hai phÆ°Æ¡ng phÃ¡p giáº£i thÃ­ch háº­u ká»³ (post-hoc explanation) Ä‘Æ°á»£c triá»ƒn khai phá»• biáº¿n nháº¥t trong phÃ¢n tÃ­ch há»c thuáº­t giÃ¡o dá»¥c. Tuy nhiÃªn, Gunasekara vÃ  Saarela [4] Ä‘Ã£ Ä‘Ã¡nh giÃ¡ tÃ¬nh tráº¡ng cá»§a XAI (Explainable Artificial Intelligence â€” TrÃ­ tuá»‡ NhÃ¢n táº¡o CÃ³ thá»ƒ Giáº£i thÃ­ch) trong giÃ¡o dá»¥c vÃ  xÃ¡c Ä‘á»‹nh má»™t khoáº£ng trá»‘ng quan trá»ng: trong khi so sÃ¡nh Ä‘á»‹nh tÃ­nh vá» xáº¿p háº¡ng táº§m quan trá»ng Ä‘áº·c trÆ°ng lÃ  phá»• biáº¿n, viá»‡c Ä‘o lÆ°á»ng Ä‘á»‹nh lÆ°á»£ng nghiÃªm ngáº·t vá» Ä‘á»™ á»•n Ä‘á»‹nh giáº£i thÃ­ch â€” má»©c Ä‘á»™ nháº¥t quÃ¡n mÃ  má»™t phÆ°Æ¡ng phÃ¡p giáº£i thÃ­ch gÃ¡n cÃ¹ng má»™t thá»© tá»± táº§m quan trá»ng qua cÃ¡c láº§n cháº¡y láº·p láº¡i, Ä‘áº§u vÃ o bá»‹ nhiá»…u, hoáº·c cÃ¡c sinh viÃªn tÆ°Æ¡ng tá»± â€” pháº§n lá»›n váº¯ng máº·t trong tÃ i liá»‡u. Má»™t kiá»ƒm tra trá»±c quan hoáº·c dá»±a trÃªn xáº¿p háº¡ng thuáº§n tÃºy khÃ´ng thá»ƒ phÃ¡t hiá»‡n cÃ¡c báº¥t á»•n Ä‘á»‹nh tinh táº¿ lÃ m suy yáº¿u niá»m tin vÃ o cÃ¡c giáº£i thÃ­ch Ä‘Æ°á»£c cung cáº¥p cho giáº£ng viÃªn.
+
+Do Ä‘Ã³, **RQ2** giá»›i thiá»‡u má»™t chá»‰ sá»‘ á»•n Ä‘á»‹nh Ä‘á»‹nh lÆ°á»£ng (vÃ­ dá»¥: tÆ°Æ¡ng quan thá»© háº¡ng cá»§a táº§m quan trá»ng Ä‘áº·c trÆ°ng SHAP qua cÃ¡c láº§n láº¥y máº«u bootstrap, hoáº·c Ä‘á»™ tÆ°Æ¡ng Ä‘á»“ng Jaccard cá»§a cÃ¡c Ä‘áº·c trÆ°ng top-k LIME) vÃ  so sÃ¡nh SHAP vá»›i LIME trÃªn chiá»u Ä‘Ã³. Äiá»u nÃ y trá»±c tiáº¿p giáº£i quyáº¿t khoáº£ng trá»‘ng phÆ°Æ¡ng phÃ¡p Ä‘Æ°á»£c xÃ¡c Ä‘á»‹nh trong [4] vÃ  táº¡o ra káº¿t quáº£ cÃ³ thá»ƒ tÃ¡i táº¡o vÃ  so sÃ¡nh Ä‘Æ°á»£c trong cÃ¡c nghiÃªn cá»©u tÆ°Æ¡ng lai.
+
+*TÃ i liá»‡u tham kháº£o há»— trá»£: [4]*
+
+---
+
+## TÃ i Liá»‡u Tham Kháº£o
+
+[1] M. Adnan vÃ  cá»™ng sá»±, "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, táº­p 9, tr. 7519â€“7539, 2021.
+
+[2] N. Tomasevic, N. Gvozdenovic vÃ  S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Evansonation*, táº­p 143, tr. 103676, 2020.
+
+[3] J. Kuzilek, M. Hlosta vÃ  Z. Zdrahal, "Open University Learning Analytics Dataset," *Scientific Data*, táº­p 4, tr. 170171, 2017.
+
+[4] S. Gunasekara vÃ  M. Saarela, "Explainable AI in Evansonation: Techniques and Qualitative Assessment," *Applied Sciences*, vol. 15, no. 3, art. 1239, 2025.
+
+[6] N. V. Chawla, K. W. Bowyer, L. O. Hall vÃ  W. P. Kegelmeyer, "SMOTE: Synthetic Minority Over-sampling Technique," *Journal of Artificial Intelligence Research*, táº­p 16, tr. 321â€“357, 2002.
+

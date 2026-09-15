@@ -1,16 +1,16 @@
-# Data Specification for Time-Aware Explainable Machine Learning on OULAD
+﻿# Data Specification for Time-Aware Explainable Machine Learning on OULAD
 
-**DSP391m – Group 5 · Report 2 (Data Tasks), Chapter 3 · Task 3.1 — Data Specification**
+**DSP391m â€“ Group 5 Â· Report 2 (Data Tasks), Chapter 3 Â· Task 3.1 â€” Data Specification**
 
 ---
 
 ## Abstract
 
-This document specifies the data requirements for the project "EduGuard: AI-Powered Early Warning and Actionable Recourse System for Students." Three research questions govern the specification: (RQ1) determining the earliest reliable checkpoint for at-risk prediction and the most effective algorithm at that point; (RQ2) assessing the stability of SHAP/LIME post-hoc explanations across time windows; and (RQ3) evaluating how class-imbalance handling strategies—SMOTE, ADASYN, and class-weight adjustment—affect predictive accuracy and explanation coherence. Each requirement is derived directly from at least one research question and mapped to a specific table within the Open University Learning Analytics Dataset (OULAD) [3]. The analysis confirms that OULAD supplies all necessary data groups—demographic context, time-stamped behavioural engagement, and longitudinal academic performance—at sufficient scale and temporal granularity to support all three research questions.
+This document specifies the data requirements for the project "EduGuard: AI-Powered Early Warning and Actionable Recourse System for Students." Three research questions govern the specification: (RQ1) determining the earliest reliable checkpoint for at-risk prediction and the most effective algorithm at that point; (RQ2) assessing the stability of SHAP/LIME post-hoc explanations across time windows; and (RQ3) evaluating how class-imbalance handling strategiesâ€”SMOTE, ADASYN, and class-weight adjustmentâ€”affect predictive accuracy and explanation coherence. Each requirement is derived directly from at least one research question and mapped to a specific table within the Open University Learning Analytics Dataset (OULAD) [3]. The analysis confirms that OULAD supplies all necessary data groupsâ€”demographic context, time-stamped behavioural engagement, and longitudinal academic performanceâ€”at sufficient scale and temporal granularity to support all three research questions.
 
 ---
 
-## 1. Introduction
+## 1. Introvansontion
 
 Early identification of at-risk students is a central challenge in learning analytics. Intervening before a student disengages or fails requires predictive models that are both accurate at early course-progress checkpoints and interpretable to academic advisors. This project operationalises the problem on OULAD [3], a publicly available relational dataset released by The Open University (UK). Before any modelling work can proceed, the data required must be rigorously identified and justified against the research questions. This document fulfils that obligation as Task 3.1 of the DSP391m capstone deliverable sequence.
 
@@ -36,10 +36,10 @@ Table 1 presents each data requirement, the research question(s) it serves, and 
 
 | Requirement | Purpose / Why Required | OULAD Source Table(s) | Key Column(s) |
 |---|---|---|---|
-| Binary at-risk outcome label | Defines the prediction target; required by all three RQs | `studentInfo` | `final_result` (Pass/Distinction → not-at-risk; Fail/Withdrawn → at-risk) |
+| Binary at-risk outcome label | Defines the prediction target; required by all three RQs | `studentInfo` | `final_result` (Pass/Distinction â†’ not-at-risk; Fail/Withdrawn â†’ at-risk) |
 | Timestamped behavioural engagement | RQ1 needs time-aware signals to build checkpoint features; RQ2 needs consistent engagement features | `studentVle` (~10.6 M rows), `vle` | `date`, `sum_clicks`, `id_site`, `activity_type` |
 | Longitudinal academic performance | Early score signals for checkpoint features (RQ1, RQ2); contributes to class structure (RQ3) | `studentAssessment`, `assessments` | `date_submitted`, `score`, `is_banked`, `assessment_type`, `weight`, `date` (deadline) |
-| Demographic context | Secondary features for fairness analysis and model input (all RQs) | `studentInfo` | `gender`, `region`, `highest_education`, `imd_band`, `age_band`, `num_of_prev_attempts`, `studied_credits`, `disability` |
+| Demographic context | Secondary features for fairness analysis and model input (all RQs) | `studentInfo` | `gender`, `region`, `highest_evansonation`, `imd_band`, `age_band`, `num_of_prev_attempts`, `studied_credits`, `disability` |
 | Student registration timeline | Captures late registration and early withdrawal as behavioural signals (RQ1) | `studentRegistration` | `date_registration`, `date_unregistration` |
 | Course timeline / duration | Converts raw event dates to course-progress percentages (RQ1) | `courses` | `module_presentation_length` |
 
@@ -50,16 +50,16 @@ Table 1 presents each data requirement, the research question(s) it serves, and 
 Three feature groups are constructed from the tables identified above, plus the target variable:
 
 **4.1 Demographic Features**
-Sourced from `studentInfo` and `studentRegistration`. These include gender, region, highest prior education, IMD deprivation band, age band, number of previous attempts, studied credits, disability status, date of registration, and (where applicable) date of unregistration. Demographic features are static per student-module-presentation record and serve as baseline covariates.
+Sourced from `studentInfo` and `studentRegistration`. These include gender, region, highest prior evansonation, IMD deprivation band, age band, number of previous attempts, studied credits, disability status, date of registration, and (where applicable) date of unregistration. Demographic features are static per student-module-presentation record and serve as baseline covariates.
 
 **4.2 Engagement (VLE) Features**
-Sourced from `studentVle` (interaction events) joined to `vle` (activity type metadata). Raw clickstream data (~10,655,280 interactions) is aggregated by student, module-presentation, and course-progress checkpoint to produce counts and rates of activity per type (e.g., `oucontent`, `quiz`, `resource`, `forumng`). The `date` column in `studentVle` is essential: it is the temporal anchor that allows features to be truncated at each checkpoint threshold.
+Sourced from `studentVle` (interaction events) joined to `vle` (activity type metadata). Raw clickstream data (~10,655,280 interactions) is aggregated by student, module-presentation, and course-progress checkpoint to provansone counts and rates of activity per type (e.g., `oucontent`, `quiz`, `resource`, `forumng`). The `date` column in `studentVle` is essential: it is the temporal anchor that allows features to be truncated at each checkpoint threshold.
 
 **4.3 Performance (Assessment) Features**
 Sourced from `studentAssessment` (submission records) joined to `assessments` (assessment metadata). Features include cumulative weighted score, proportion of assessments submitted on time, and whether any assessment was banked. The `date_submitted` column in `studentAssessment` enables time-aware truncation analogous to the VLE engagement approach.
 
 **4.4 Target Variable**
-The binary label is derived from `final_result` in `studentInfo`. Records with `final_result` ∈ {Fail, Withdrawn} are labelled at-risk (positive class = 1); records with {Pass, Distinction} are labelled not-at-risk (0). The observed at-risk rate across the dataset is approximately 52.8%, indicating a mild class imbalance that motivates RQ3.
+The binary label is derived from `final_result` in `studentInfo`. Records with `final_result` âˆˆ {Fail, Withdrawn} are labelled at-risk (positive class = 1); records with {Pass, Distinction} are labelled not-at-risk (0). The observed at-risk rate across the dataset is approximately 52.8%, indicating a mild class imbalance that motivates RQ3.
 
 ---
 
@@ -85,7 +85,7 @@ Table 2 summarises why all seven OULAD tables are required and indicates which a
 | `assessments` | Provides assessment type, weight, and deadline date; necessary to compute weighted performance features | Partial (`date` as deadline) |
 | `courses` | Provides `module_presentation_length` to convert event dates to progress percentages | No |
 
-The time-indexed columns—`studentVle.date` and `studentAssessment.date_submitted`—are the architectural foundation of the time-aware requirement. Without them, checkpoint-based truncation (essential to RQ1 and RQ2) cannot be performed.
+The time-indexed columnsâ€”`studentVle.date` and `studentAssessment.date_submitted`â€”are the architectural foundation of the time-aware requirement. Without them, checkpoint-based truncation (essential to RQ1 and RQ2) cannot be performed.
 
 ---
 
@@ -95,7 +95,7 @@ The following scale statistics confirm that OULAD is adequate for the intended s
 
 - **32,593** student-module-presentation records (analytical grain)
 - **28,785** unique students
-- **22** module-presentations (7 courses × multiple presentation years)
+- **22** module-presentations (7 courses Ã— multiple presentation years)
 - **7** relational tables
 - **10,655,280** VLE interaction rows
 - **173,912** assessment submission rows
@@ -107,10 +107,11 @@ The dataset's scale is sufficient for training and evaluating multiple classifie
 
 ## 8. Data Adequacy Conclusion
 
-OULAD supplies all data groups required by RQ1–RQ3: a binary outcome label, time-stamped behavioural engagement, longitudinal assessment performance, and demographic context. The composite key `(id_student, code_module, code_presentation)` ensures unambiguous linkage across all seven tables. With over 32,000 analytical records, more than 10.6 million timestamped interaction events, and a temporal resolution of one day, the dataset provides sufficient scale and granularity to support time-aware checkpoint modelling, explanation-stability analysis, and imbalance-handling experiments. No external data sources are required to address the three research questions.
+OULAD supplies all data groups required by RQ1â€“RQ3: a binary outcome label, time-stamped behavioural engagement, longitudinal assessment performance, and demographic context. The composite key `(id_student, code_module, code_presentation)` ensures unambiguous linkage across all seven tables. With over 32,000 analytical records, more than 10.6 million timestamped interaction events, and a temporal resolution of one day, the dataset provides sufficient scale and granularity to support time-aware checkpoint modelling, explanation-stability analysis, and imbalance-handling experiments. No external data sources are required to address the three research questions.
 
 ---
 
 ## References
 
 [3] J. Kuzilek, M. Hlosta, Z. Zdrahal, "Open University Learning Analytics dataset," *Scientific Data*, vol. 4, art. 170171, 2017.
+

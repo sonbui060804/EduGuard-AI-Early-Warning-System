@@ -1,14 +1,14 @@
-# Reproducibility Guide
+﻿# Reprovansonibility Guide
 
 **Subtitle:** Everything an External Reader Needs to Recreate the Master Table and All Downstream Artifacts
 
-_DSP391m – Group 5 · Report 2 (Data Tasks), Chapter 3 · Work item STT 31 (Huy Anh)_
+_DSP391m â€“ Group 5 Â· Report 2 (Data Tasks), Chapter 3 Â· Work item STT 31 (Huy Anh)_
 
 ---
 
 ## 1. Purpose
 
-Reproducibility is a first-class requirement for scientific data work. This guide documents the exact steps, environment, and data provenance controls that allow any external reader — including future team members and assessors — to recreate every artifact produced by this pipeline, bit-for-bit, starting from the raw OULAD download.
+Reprovansonibility is a first-class requirement for scientific data work. This guide documents the exact steps, environment, and data provenance controls that allow any external reader â€” including future team members and assessors â€” to recreate every artifact provansoned by this pipeline, bit-for-bit, starting from the raw OULAD download.
 
 ---
 
@@ -87,13 +87,13 @@ All committed artifacts (model bundles, tables, figures) were built on Windows w
 
 **Bundle compatibility.** The committed `.joblib` bundles are scikit-learn 1.8 / numpy 2.x pickles. Under the older pins (Python 3.11 / scikit-learn 1.5 / numpy < 2), the ANN bundle (`models/ann_t100.joblib`) fails to load (`MT19937 is not a known BitGenerator`), and the remaining bundles load only with an `InconsistentVersionWarning` (results not guaranteed). Always use the pinned environment above.
 
-**Split guard.** `data/splits/test_student_ids.csv` (5,756 students) is the committed source of truth. `python -m src.evaluation.make_split` is guarded: if the id file exists it only loads it and never re-derives the split. Re-deriving (`--rederive`) under a different scikit-learn version changes 4,574/5,756 ids and invalidates every published number — it is reserved for a whole-team decision.
+**Split guard.** `data/splits/test_student_ids.csv` (5,756 students) is the committed source of truth. `python -m src.evaluation.make_split` is guarded: if the id file exists it only loads it and never re-derives the split. Re-deriving (`--rederive`) under a different scikit-learn version changes 4,574/5,756 ids and invalidates every published number â€” it is reserved for a whole-team decision.
 
 ---
 
-## 5. Exact Reproduction Steps
+## 5. Exact Reprovansontion Steps
 
-Run all commands from the **project root directory** in the order shown. Each step is idempotent: re-running produces the same output.
+Run all commands from the **project root directory** in the order shown. Each step is idempotent: re-running provansones the same output.
 
 ```
 1. python setup_raw_data.py
@@ -108,15 +108,15 @@ Builds `data/checkpoint_map.csv` and runs a self-check to confirm checkpoint bou
 ```
 3. python -m src.data.build_master_table
 ```
-Produces:
-- `data/interim/master_raw.parquet` — the master table (32,593 rows × 33 columns)
-- `data/interim/master_join_log.csv` — row counts after each left-join step
-- `data/interim/master_cleaning_log.csv` — a record of all cleaning decisions
+Provansones:
+- `data/interim/master_raw.parquet` â€” the master table (32,593 rows Ã— 33 columns)
+- `data/interim/master_join_log.csv` â€” row counts after each left-join step
+- `data/interim/master_cleaning_log.csv` â€” a record of all cleaning decisions
 
 ```
 4. python -m src.data.make_checkpoints
 ```
-Produces:
+Provansones:
 - `data/checkpoints/dataset_t10.parquet` through `dataset_t100.parquet` (six files at 10 %, 30 %, 50 %, 70 %, 90 %, 100 % of the module)
 - `data/checkpoints/checkpoint_summary.csv`
 
@@ -125,9 +125,9 @@ This step is **resumable**: if interrupted, re-running skips already-written che
 ```
 5. python -m src.eda.eda
 ```
-Produces:
-- `reports/figures/*.png` — all EDA figures
-- `reports/eda_findings.json` — machine-readable summary statistics
+Provansones:
+- `reports/figures/*.png` â€” all EDA figures
+- `reports/eda_findings.json` â€” machine-readable summary statistics
 
 Requires a working freetype/font stack (see Section 4).
 
@@ -138,7 +138,7 @@ Runs temporal-leakage checks and split-integrity tests. All tests must pass befo
 
 ---
 
-## 6. Reproducibility Guarantees
+## 6. Reprovansonibility Guarantees
 
 | Property | Guarantee |
 |---|---|
@@ -151,14 +151,15 @@ Runs temporal-leakage checks and split-integrity tests. All tests must pass befo
 
 ## 7. Verified Facts
 
-The following facts were established on the canonical run and must hold after any reproduction:
+The following facts were established on the canonical run and must hold after any reprovansontion:
 
-- `master_raw.parquet` contains **32,593 rows × 33 columns**.
-- All left-joins in `build_master_table` preserve exactly **32,593 rows** — no row duplication and no row loss.
+- `master_raw.parquet` contains **32,593 rows Ã— 33 columns**.
+- All left-joins in `build_master_table` preserve exactly **32,593 rows** â€” no row duplication and no row loss.
 - The master table contains **0 duplicate keys** (verified by `pytest tests/test_leakage.py`).
 - The at-risk rate in the master table is **52.8 %**.
-- The six checkpoint datasets share an identical roster of **32,593 enrolments (28,785 distinct students)** — no enrolment appears in one checkpoint but not another.
+- The six checkpoint datasets share an identical roster of **32,593 enrolments (28,785 distinct students)** â€” no enrolment appears in one checkpoint but not another.
 
 ---
 
 _DSP391m Group 5. Last updated: 2026-07-12._
+

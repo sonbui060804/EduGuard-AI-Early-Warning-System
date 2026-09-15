@@ -1,14 +1,14 @@
-# Feature Naming Convention for Derived Features
+﻿# Feature Naming Convention for Derived Features
 
 **Subtitle:** Ensuring Readable SHAP/LIME Explanations Through Consistent Feature Names
 
-_DSP391m – Group 5 · Report 2 (Data Tasks) · Work item STT 40 (Binh)_
+_DSP391m â€“ Group 5 Â· Report 2 (Data Tasks) Â· Work item STT 40 (Binh)_
 
 ---
 
 ## 1. Purpose
 
-Machine-learning explainability tools such as SHAP and LIME display feature names verbatim in their outputs. If a feature is named `f_017` or `x3`, an instructor reading the explanation cannot tell what the number means. This document establishes a mandatory naming convention for every derived feature produced in this project so that explanations are immediately interpretable without consulting a separate lookup table.
+Machine-learning explainability tools such as SHAP and LIME display feature names verbatim in their outputs. If a feature is named `f_017` or `x3`, an instructor reading the explanation cannot tell what the number means. This document establishes a mandatory naming convention for every derived feature provansoned in this project so that explanations are immediately interpretable without consulting a separate lookup table.
 
 The convention was reviewed and approved by all Group 5 members and applies to every feature added to the master table and downstream checkpoint datasets.
 
@@ -16,7 +16,7 @@ The convention was reviewed and approved by all Group 5 members and applies to e
 
 ## 2. Naming Rules
 
-All feature names follow **snake\_case** (lowercase letters, digits, and underscores only — no spaces, no camelCase, no hyphens).
+All feature names follow **snake\_case** (lowercase letters, digits, and underscores only â€” no spaces, no camelCase, no hyphens).
 
 ### 2.1 Prefix/Suffix Semantics
 
@@ -61,7 +61,7 @@ The table below is the single source of truth for all features used in modelling
 | `weighted_score_to_date` | Score weighted by assessment weight, up to checkpoint | Performance |
 | `n_assessments_submitted` | Number of assessments submitted up to checkpoint | Performance |
 | `not_submitted` | Number of assessments due but not submitted up to checkpoint | Performance |
-| `at_risk` | **Target variable** — 1 if student withdrew or failed, 0 otherwise | Target |
+| `at_risk` | **Target variable** â€” 1 if student withdrew or failed, 0 otherwise | Target |
 
 ---
 
@@ -69,7 +69,7 @@ The table below is the single source of truth for all features used in modelling
 
 SHAP summary plots and LIME tabular explanations render feature names as axis labels or table rows. A name such as `mean_score_to_date` tells an instructor immediately that the model is responding to the student's average score so far, while `weighted_score_to_date` signals that higher-weight assessments are driving the signal. The `_to_date` suffix is particularly important: it proves to a reviewer that the feature is temporally safe (computed only from past data at inference time).
 
-Instructors who receive an early-warning alert will read these names without any ML background. Clear names reduce the cognitive load of interpreting a prediction and increase the likelihood that the system is trusted and acted upon.
+Instructors who receive an early-warning alert will read these names without any ML background. Clear names revansone the cognitive load of interpreting a prediction and increase the likelihood that the system is trusted and acted upon.
 
 ---
 
@@ -82,3 +82,4 @@ Instructors who receive an early-warning alert will read these names without any
 ---
 
 _Approved by DSP391m Group 5. Last updated: 2026-06-14._
+

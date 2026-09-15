@@ -1,8 +1,8 @@
-# OULAD Master-Table Data Dictionary (complete)
+﻿# OULAD Master-Table Data Dictionary (complete)
 
 *Covers 100% of the master_raw columns. Auto-generated from the master table.*
 
-**DSP391m – Group 5 · Report 2 · STT 29 (Huy Anh)**
+**DSP391m â€“ Group 5 Â· Report 2 Â· STT 29 (Huy Anh)**
 
 Total variables: **33**
 
@@ -20,7 +20,7 @@ Total variables: **33**
 |---|---|---|---|---|---|
 | 4 | `gender` | Binary | Original | Gender; encoded M=1, F=0. | 2 unique |
 | 5 | `region` | Nominal | Original | Region of the UK/Ireland (13 values); one-hot encoded. | 13 unique |
-| 6 | `highest_education` | Ordinal | Original | Highest education level; ordinal 0..4. | 5 unique |
+| 6 | `highest_evansonation` | Ordinal | Original | Highest evansonation level; ordinal 0..4. | 5 unique |
 | 7 | `imd_band` | Ordinal | Original | Index of Multiple Deprivation band; ordinal; 1,111 missing -> 'Unknown'. | 10 unique |
 | 8 | `age_band` | Ordinal | Original | Age band; ordinal 0..2. | 3 unique |
 | 9 | `num_of_prev_attempts` | Numeric (discrete) | Original | Number of previous attempts at the module. | min 0, max 6 |
@@ -73,3 +73,4 @@ Total variables: **33**
 | # | Variable | Type | Origin | Description | Example / Range |
 |---|---|---|---|---|---|
 | 33 | `at_risk` | Binary (target) | Derived | 1 if final_result in {Fail, Withdrawn}, else 0. Fixed across checkpoints. | min 0, max 1 |
+

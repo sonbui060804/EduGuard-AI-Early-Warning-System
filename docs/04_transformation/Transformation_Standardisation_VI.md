@@ -1,131 +1,132 @@
-# Chuẩn Hóa và Biến Đổi Dữ Liệu: Phân Loại Biến, Mã Hóa và Chiến Lược Thang Đo
+﻿# Chuáº©n HÃ³a vÃ  Biáº¿n Äá»•i Dá»¯ Liá»‡u: PhÃ¢n Loáº¡i Biáº¿n, MÃ£ HÃ³a vÃ  Chiáº¿n LÆ°á»£c Thang Äo
 
-**DSP391m – Nhóm 5 · Báo cáo 2 (Nhiệm vụ Dữ liệu), Chương 3 · Nhiệm vụ 3.4 — Chuẩn hóa & Biến đổi**
-
----
-
-## Tóm tắt (Abstract)
-
-Báo cáo này ghi lại danh mục phân loại biến, các quyết định mã hóa (encoding) và chiến lược chuẩn hóa thang đo (standardisation) được triển khai trong `src/features/preprocessing.py` thuộc dự án học phần DSP391m (Nhóm 5). Tập dữ liệu, được trích xuất từ bộ dữ liệu phân tích học tập của Đại học Mở Anh (OULAD), chứa 28 đặc trưng thô và phái sinh bao gồm tương tác nhấp chuột (clickstream), thuộc tính nhân khẩu học và chỉ số kết quả học tập. Mỗi đặc trưng được gán vào một trong năm danh mục kiểu — định lượng (numeric), thứ bậc (ordinal), danh định (nominal), nhị phân (binary) hoặc chỉ báo (indicator) — và được xử lý bởi transformer tương ứng tương thích với sklearn trong một `ColumnTransformer` duy nhất. Một quy trình phòng tránh rò rỉ thông tin (anti-leakage) nghiêm ngặt quy định trình tự các bước: toàn bộ bộ mã hóa và `StandardScaler` chỉ được khớp (fit) trên tập huấn luyện và sau đó áp dụng cho cả tập huấn luyện lẫn tập kiểm tra. Giai đoạn biến đổi tạo ra ma trận đặc trưng dày đặc (dense) 49 cột, được xác minh không có giá trị khuyết (NaN), với tên đặc trưng được giữ nguyên theo chuẩn `snake_case` phục vụ phân tích diễn giải mô hình (explainability) bằng SHAP và LIME ở các bước tiếp theo.
+**DSP391m â€“ NhÃ³m 5 Â· BÃ¡o cÃ¡o 2 (Nhiá»‡m vá»¥ Dá»¯ liá»‡u), ChÆ°Æ¡ng 3 Â· Nhiá»‡m vá»¥ 3.4 â€” Chuáº©n hÃ³a & Biáº¿n Ä‘á»•i**
 
 ---
 
-## 1. Giới thiệu
+## TÃ³m táº¯t (Abstract)
 
-Một pipeline học máy (machine learning) hiệu quả đòi hỏi các giá trị đặc trưng thô phải được chuyển đổi thành biểu diễn số vừa phù hợp về mặt toán học với từng lớp mô hình, vừa không bị nhiễm thông tin rò rỉ từ dữ liệu kiểm tra chưa thấy. Trong bài toán dự đoán sinh viên có nguy cơ (at-risk) của DSP391m, các đặc trưng bắt nguồn từ ba thang đo khác nhau: số đếm liên tục và rời rạc từ nhật ký nhấp chuột VLE, thuộc tính phân loại có thứ tự thu thập khi đăng ký học, và định danh phân loại không có thứ tự. Áp dụng một chiến lược mã hóa duy nhất cho tất cả các đặc trưng — ví dụ như dùng `OneHotEncoder` cho biến thứ bậc — sẽ loại bỏ thông tin thứ hạng nội tại của các danh mục như trình độ học vấn hay dải tước đoạt, làm phình to số chiều không gian đặc trưng mà không tăng thêm giá trị thông tin. Ngược lại, áp dụng mã số nguyên cho biến danh định như `region` sẽ áp đặt một quan hệ thứ tự sai lệch. Mục 2 liệt kê danh mục phân loại biến giải quyết các phân biệt này. Mục 3 trình bày chi tiết từng phương pháp mã hóa và căn cứ kỹ thuật. Mục 4 mô tả bước chuẩn hóa và cách triển khai phòng tránh rò rỉ. Mục 5 trình bày trình tự pipeline biến đổi. Mục 6 báo cáo các thuộc tính đầu ra đã được xác minh.
+BÃ¡o cÃ¡o nÃ y ghi láº¡i danh má»¥c phÃ¢n loáº¡i biáº¿n, cÃ¡c quyáº¿t Ä‘á»‹nh mÃ£ hÃ³a (encoding) vÃ  chiáº¿n lÆ°á»£c chuáº©n hÃ³a thang Ä‘o (standardisation) Ä‘Æ°á»£c triá»ƒn khai trong `src/features/preprocessing.py` thuá»™c dá»± Ã¡n há»c pháº§n DSP391m (NhÃ³m 5). Táº­p dá»¯ liá»‡u, Ä‘Æ°á»£c trÃ­ch xuáº¥t tá»« bá»™ dá»¯ liá»‡u phÃ¢n tÃ­ch há»c táº­p cá»§a Äáº¡i há»c Má»Ÿ Anh (OULAD), chá»©a 28 Ä‘áº·c trÆ°ng thÃ´ vÃ  phÃ¡i sinh bao gá»“m tÆ°Æ¡ng tÃ¡c nháº¥p chuá»™t (clickstream), thuá»™c tÃ­nh nhÃ¢n kháº©u há»c vÃ  chá»‰ sá»‘ káº¿t quáº£ há»c táº­p. Má»—i Ä‘áº·c trÆ°ng Ä‘Æ°á»£c gÃ¡n vÃ o má»™t trong nÄƒm danh má»¥c kiá»ƒu â€” Ä‘á»‹nh lÆ°á»£ng (numeric), thá»© báº­c (ordinal), danh Ä‘á»‹nh (nominal), nhá»‹ phÃ¢n (binary) hoáº·c chá»‰ bÃ¡o (indicator) â€” vÃ  Ä‘Æ°á»£c xá»­ lÃ½ bá»Ÿi transformer tÆ°Æ¡ng á»©ng tÆ°Æ¡ng thÃ­ch vá»›i sklearn trong má»™t `ColumnTransformer` duy nháº¥t. Má»™t quy trÃ¬nh phÃ²ng trÃ¡nh rÃ² rá»‰ thÃ´ng tin (anti-leakage) nghiÃªm ngáº·t quy Ä‘á»‹nh trÃ¬nh tá»± cÃ¡c bÆ°á»›c: toÃ n bá»™ bá»™ mÃ£ hÃ³a vÃ  `StandardScaler` chá»‰ Ä‘Æ°á»£c khá»›p (fit) trÃªn táº­p huáº¥n luyá»‡n vÃ  sau Ä‘Ã³ Ã¡p dá»¥ng cho cáº£ táº­p huáº¥n luyá»‡n láº«n táº­p kiá»ƒm tra. Giai Ä‘oáº¡n biáº¿n Ä‘á»•i táº¡o ra ma tráº­n Ä‘áº·c trÆ°ng dÃ y Ä‘áº·c (dense) 49 cá»™t, Ä‘Æ°á»£c xÃ¡c minh khÃ´ng cÃ³ giÃ¡ trá»‹ khuyáº¿t (NaN), vá»›i tÃªn Ä‘áº·c trÆ°ng Ä‘Æ°á»£c giá»¯ nguyÃªn theo chuáº©n `snake_case` phá»¥c vá»¥ phÃ¢n tÃ­ch diá»…n giáº£i mÃ´ hÃ¬nh (explainability) báº±ng SHAP vÃ  LIME á»Ÿ cÃ¡c bÆ°á»›c tiáº¿p theo.
 
 ---
 
-## 2. Danh mục Phân loại Biến
+## 1. Giá»›i thiá»‡u
 
-28 đặc trưng đầu vào (loại trừ biến mục tiêu `at_risk` và các cột định danh `id_student`, `code_module`, `code_presentation`) được chia thành năm kiểu. Việc phân loại kiểu biến quyết định lựa chọn transformer trong `ColumnTransformer` tiếp theo.
+Má»™t pipeline há»c mÃ¡y (machine learning) hiá»‡u quáº£ Ä‘Ã²i há»i cÃ¡c giÃ¡ trá»‹ Ä‘áº·c trÆ°ng thÃ´ pháº£i Ä‘Æ°á»£c chuyá»ƒn Ä‘á»•i thÃ nh biá»ƒu diá»…n sá»‘ vá»«a phÃ¹ há»£p vá» máº·t toÃ¡n há»c vá»›i tá»«ng lá»›p mÃ´ hÃ¬nh, vá»«a khÃ´ng bá»‹ nhiá»…m thÃ´ng tin rÃ² rá»‰ tá»« dá»¯ liá»‡u kiá»ƒm tra chÆ°a tháº¥y. Trong bÃ i toÃ¡n dá»± Ä‘oÃ¡n sinh viÃªn cÃ³ nguy cÆ¡ (at-risk) cá»§a DSP391m, cÃ¡c Ä‘áº·c trÆ°ng báº¯t nguá»“n tá»« ba thang Ä‘o khÃ¡c nhau: sá»‘ Ä‘áº¿m liÃªn tá»¥c vÃ  rá»i ráº¡c tá»« nháº­t kÃ½ nháº¥p chuá»™t VLE, thuá»™c tÃ­nh phÃ¢n loáº¡i cÃ³ thá»© tá»± thu tháº­p khi Ä‘Äƒng kÃ½ há»c, vÃ  Ä‘á»‹nh danh phÃ¢n loáº¡i khÃ´ng cÃ³ thá»© tá»±. Ãp dá»¥ng má»™t chiáº¿n lÆ°á»£c mÃ£ hÃ³a duy nháº¥t cho táº¥t cáº£ cÃ¡c Ä‘áº·c trÆ°ng â€” vÃ­ dá»¥ nhÆ° dÃ¹ng `OneHotEncoder` cho biáº¿n thá»© báº­c â€” sáº½ loáº¡i bá» thÃ´ng tin thá»© háº¡ng ná»™i táº¡i cá»§a cÃ¡c danh má»¥c nhÆ° trÃ¬nh Ä‘á»™ há»c váº¥n hay dáº£i tÆ°á»›c Ä‘oáº¡t, lÃ m phÃ¬nh to sá»‘ chiá»u khÃ´ng gian Ä‘áº·c trÆ°ng mÃ  khÃ´ng tÄƒng thÃªm giÃ¡ trá»‹ thÃ´ng tin. NgÆ°á»£c láº¡i, Ã¡p dá»¥ng mÃ£ sá»‘ nguyÃªn cho biáº¿n danh Ä‘á»‹nh nhÆ° `region` sáº½ Ã¡p Ä‘áº·t má»™t quan há»‡ thá»© tá»± sai lá»‡ch. Má»¥c 2 liá»‡t kÃª danh má»¥c phÃ¢n loáº¡i biáº¿n giáº£i quyáº¿t cÃ¡c phÃ¢n biá»‡t nÃ y. Má»¥c 3 trÃ¬nh bÃ y chi tiáº¿t tá»«ng phÆ°Æ¡ng phÃ¡p mÃ£ hÃ³a vÃ  cÄƒn cá»© ká»¹ thuáº­t. Má»¥c 4 mÃ´ táº£ bÆ°á»›c chuáº©n hÃ³a vÃ  cÃ¡ch triá»ƒn khai phÃ²ng trÃ¡nh rÃ² rá»‰. Má»¥c 5 trÃ¬nh bÃ y trÃ¬nh tá»± pipeline biáº¿n Ä‘á»•i. Má»¥c 6 bÃ¡o cÃ¡o cÃ¡c thuá»™c tÃ­nh Ä‘áº§u ra Ä‘Ã£ Ä‘Æ°á»£c xÃ¡c minh.
 
-**Bảng 1. Phân loại biến và gán bộ mã hóa / chuẩn hóa**
+---
 
-| Kiểu | Số lượng | Biến | Bộ mã hóa / Chuẩn hóa |
+## 2. Danh má»¥c PhÃ¢n loáº¡i Biáº¿n
+
+28 Ä‘áº·c trÆ°ng Ä‘áº§u vÃ o (loáº¡i trá»« biáº¿n má»¥c tiÃªu `at_risk` vÃ  cÃ¡c cá»™t Ä‘á»‹nh danh `id_student`, `code_module`, `code_presentation`) Ä‘Æ°á»£c chia thÃ nh nÄƒm kiá»ƒu. Viá»‡c phÃ¢n loáº¡i kiá»ƒu biáº¿n quyáº¿t Ä‘á»‹nh lá»±a chá»n transformer trong `ColumnTransformer` tiáº¿p theo.
+
+**Báº£ng 1. PhÃ¢n loáº¡i biáº¿n vÃ  gÃ¡n bá»™ mÃ£ hÃ³a / chuáº©n hÃ³a**
+
+| Kiá»ƒu | Sá»‘ lÆ°á»£ng | Biáº¿n | Bá»™ mÃ£ hÃ³a / Chuáº©n hÃ³a |
 |------|---------|------|------------------------|
-| Định lượng (Numeric) | 19 | `num_of_prev_attempts`, `studied_credits`, `date_registration`, `total_clicks`, `n_days_active`, `clicks_forumng`, `clicks_oucontent`, `clicks_resource`, `clicks_homepage`, `clicks_oucollaborate`, `clicks_quiz`, `clicks_subpage`, `clicks_url`, `max_clicks_single_day`, `mean_clicks_per_active_day`, `days_since_last_activity`, `mean_score_to_date`, `n_assessments_submitted`, `weighted_score_to_date` | `StandardScaler` (một số đặc trưng được log1p / winsorize trước ở giai đoạn xử lý ngoại lai) |
-| Thứ bậc (Ordinal) | 3 | `highest_education`, `imd_band`, `age_band` | `OrdinalEncoder` với thứ tự danh mục cố định, tường minh |
-| Danh định (Nominal) | 3 | `region`, `code_module`, `code_presentation` | `OneHotEncoder` |
-| Nhị phân (Binary) | 2 | `gender`, `disability` | Ánh xạ 0/1 trực tiếp qua `BinaryEncoder` tùy chỉnh |
-| Chỉ báo (Indicator) | 1 | `not_submitted` | Passthrough (đã là 0/1 từ bước feature engineering) |
+| Äá»‹nh lÆ°á»£ng (Numeric) | 19 | `num_of_prev_attempts`, `studied_credits`, `date_registration`, `total_clicks`, `n_days_active`, `clicks_forumng`, `clicks_oucontent`, `clicks_resource`, `clicks_homepage`, `clicks_oucollaborate`, `clicks_quiz`, `clicks_subpage`, `clicks_url`, `max_clicks_single_day`, `mean_clicks_per_active_day`, `days_since_last_activity`, `mean_score_to_date`, `n_assessments_submitted`, `weighted_score_to_date` | `StandardScaler` (má»™t sá»‘ Ä‘áº·c trÆ°ng Ä‘Æ°á»£c log1p / winsorize trÆ°á»›c á»Ÿ giai Ä‘oáº¡n xá»­ lÃ½ ngoáº¡i lai) |
+| Thá»© báº­c (Ordinal) | 3 | `highest_evansonation`, `imd_band`, `age_band` | `OrdinalEncoder` vá»›i thá»© tá»± danh má»¥c cá»‘ Ä‘á»‹nh, tÆ°á»ng minh |
+| Danh Ä‘á»‹nh (Nominal) | 3 | `region`, `code_module`, `code_presentation` | `OneHotEncoder` |
+| Nhá»‹ phÃ¢n (Binary) | 2 | `gender`, `disability` | Ãnh xáº¡ 0/1 trá»±c tiáº¿p qua `BinaryEncoder` tÃ¹y chá»‰nh |
+| Chá»‰ bÃ¡o (Indicator) | 1 | `not_submitted` | Passthrough (Ä‘Ã£ lÃ  0/1 tá»« bÆ°á»›c feature engineering) |
 
-**Ghi chú về phân nhóm con trong biến định lượng.** Trong 19 biến định lượng, các số đếm nhấp chuột VLE (`total_clicks`, `n_days_active`, và toàn bộ tám cột `clicks_<type>`, cùng với `max_clicks_single_day` và `mean_clicks_per_active_day`) có phân phối lệch phải mạnh và được biến đổi trước bằng `log1p` trước khi áp dụng `StandardScaler`. Các biến `studied_credits`, `num_of_prev_attempts`, `weighted_score_to_date` và `days_since_last_activity` được winsorize ở phân vị thứ 1 và thứ 99. Ba biến — `mean_score_to_date`, `n_assessments_submitted` và `date_registration` — không nhận bất kỳ biến đổi ngoại lai nào.
+**Ghi chÃº vá» phÃ¢n nhÃ³m con trong biáº¿n Ä‘á»‹nh lÆ°á»£ng.** Trong 19 biáº¿n Ä‘á»‹nh lÆ°á»£ng, cÃ¡c sá»‘ Ä‘áº¿m nháº¥p chuá»™t VLE (`total_clicks`, `n_days_active`, vÃ  toÃ n bá»™ tÃ¡m cá»™t `clicks_<type>`, cÃ¹ng vá»›i `max_clicks_single_day` vÃ  `mean_clicks_per_active_day`) cÃ³ phÃ¢n phá»‘i lá»‡ch pháº£i máº¡nh vÃ  Ä‘Æ°á»£c biáº¿n Ä‘á»•i trÆ°á»›c báº±ng `log1p` trÆ°á»›c khi Ã¡p dá»¥ng `StandardScaler`. CÃ¡c biáº¿n `studied_credits`, `num_of_prev_attempts`, `weighted_score_to_date` vÃ  `days_since_last_activity` Ä‘Æ°á»£c winsorize á»Ÿ phÃ¢n vá»‹ thá»© 1 vÃ  thá»© 99. Ba biáº¿n â€” `mean_score_to_date`, `n_assessments_submitted` vÃ  `date_registration` â€” khÃ´ng nháº­n báº¥t ká»³ biáº¿n Ä‘á»•i ngoáº¡i lai nÃ o.
 
 ---
 
-## 3. Các Phương pháp Mã hóa và Căn cứ Kỹ thuật
+## 3. CÃ¡c PhÆ°Æ¡ng phÃ¡p MÃ£ hÃ³a vÃ  CÄƒn cá»© Ká»¹ thuáº­t
 
-### 3.1 OrdinalEncoder (biến thứ bậc)
+### 3.1 OrdinalEncoder (biáº¿n thá»© báº­c)
 
-Biến thứ bậc (ordinal) có thứ tự xếp hạng nội tại mang thông tin dự đoán. Mã hóa chúng thành các số nguyên 0, 1, 2, … k−1 bảo toàn thứ tự này mà không làm tăng số chiều. `OneHotEncoder` sẽ phá hủy quan hệ thứ hạng; do đó nó được loại trừ tường minh cho các biến này.
+Biáº¿n thá»© báº­c (ordinal) cÃ³ thá»© tá»± xáº¿p háº¡ng ná»™i táº¡i mang thÃ´ng tin dá»± Ä‘oÃ¡n. MÃ£ hÃ³a chÃºng thÃ nh cÃ¡c sá»‘ nguyÃªn 0, 1, 2, â€¦ kâˆ’1 báº£o toÃ n thá»© tá»± nÃ y mÃ  khÃ´ng lÃ m tÄƒng sá»‘ chiá»u. `OneHotEncoder` sáº½ phÃ¡ há»§y quan há»‡ thá»© háº¡ng; do Ä‘Ã³ nÃ³ Ä‘Æ°á»£c loáº¡i trá»« tÆ°á»ng minh cho cÃ¡c biáº¿n nÃ y.
 
-Thứ tự danh mục chính xác được cố định trong `ORDINAL_ORDERS` là:
+Thá»© tá»± danh má»¥c chÃ­nh xÃ¡c Ä‘Æ°á»£c cá»‘ Ä‘á»‹nh trong `ORDINAL_ORDERS` lÃ :
 
-- `highest_education`: `No Formal quals` < `Lower Than A Level` < `A Level or Equivalent` < `HE Qualification` < `Post Graduate Qualification`
+- `highest_evansonation`: `No Formal quals` < `Lower Than A Level` < `A Level or Equivalent` < `HE Qualification` < `Post Graduate Qualification`
 - `imd_band`: `Unknown` < `0-10%` < `10-20` < `20-30%` < `30-40%` < `40-50%` < `50-60%` < `60-70%` < `70-80%` < `80-90%` < `90-100%`
 - `age_band`: `0-35` < `35-55` < `55<=`
 
-Cấu hình `handle_unknown='use_encoded_value'` kết hợp `unknown_value=-1` đảm bảo rằng mọi danh mục xuất hiện trong tập kiểm tra nhưng vắng mặt trong tập huấn luyện sẽ được gán mã −1 thay vì gây lỗi ngoại lệ (exception). Các mô hình dựa trên cây (Random Forest, XGBoost, LightGBM) xử lý giá trị sentinel này mà không gặp vấn đề.
+Cáº¥u hÃ¬nh `handle_unknown='use_encoded_value'` káº¿t há»£p `unknown_value=-1` Ä‘áº£m báº£o ráº±ng má»i danh má»¥c xuáº¥t hiá»‡n trong táº­p kiá»ƒm tra nhÆ°ng váº¯ng máº·t trong táº­p huáº¥n luyá»‡n sáº½ Ä‘Æ°á»£c gÃ¡n mÃ£ âˆ’1 thay vÃ¬ gÃ¢y lá»—i ngoáº¡i lá»‡ (exception). CÃ¡c mÃ´ hÃ¬nh dá»±a trÃªn cÃ¢y (Random Forest, XGBoost, LightGBM) xá»­ lÃ½ giÃ¡ trá»‹ sentinel nÃ y mÃ  khÃ´ng gáº·p váº¥n Ä‘á».
 
-### 3.2 OneHotEncoder (biến danh định)
+### 3.2 OneHotEncoder (biáº¿n danh Ä‘á»‹nh)
 
-Biến danh định (nominal) — `region`, `code_module`, `code_presentation` — không có thứ tự nội tại. Việc gán mã số nguyên sẽ áp đặt một thứ hạng sai lệch, ví dụ ngụ ý một vùng địa lý "lớn hơn" vùng khác. `OneHotEncoder` tạo ra một cột nhị phân cho mỗi giá trị danh mục, làm cho phép mã hóa bất biến với hoán vị.
+Biáº¿n danh Ä‘á»‹nh (nominal) â€” `region`, `code_module`, `code_presentation` â€” khÃ´ng cÃ³ thá»© tá»± ná»™i táº¡i. Viá»‡c gÃ¡n mÃ£ sá»‘ nguyÃªn sáº½ Ã¡p Ä‘áº·t má»™t thá»© háº¡ng sai lá»‡ch, vÃ­ dá»¥ ngá»¥ Ã½ má»™t vÃ¹ng Ä‘á»‹a lÃ½ "lá»›n hÆ¡n" vÃ¹ng khÃ¡c. `OneHotEncoder` táº¡o ra má»™t cá»™t nhá»‹ phÃ¢n cho má»—i giÃ¡ trá»‹ danh má»¥c, lÃ m cho phÃ©p mÃ£ hÃ³a báº¥t biáº¿n vá»›i hoÃ¡n vá»‹.
 
-Cấu hình: `handle_unknown='ignore'` (danh mục lạ trong tập kiểm tra tạo ra hàng toàn số không, tránh lỗi runtime); `sparse_output=False` (mảng dày đặc để tương thích pipeline); `drop=None` (giữ lại tất cả các cột). Lựa chọn `drop=None` là chủ ý: việc loại bỏ một cột tham chiếu sẽ ngăn SHAP waterfall plot và LIME gán tầm quan trọng (importance) cho danh mục bị loại bỏ đó, làm giảm khả năng diễn giải sau thực nghiệm (post-hoc interpretability).
+Cáº¥u hÃ¬nh: `handle_unknown='ignore'` (danh má»¥c láº¡ trong táº­p kiá»ƒm tra táº¡o ra hÃ ng toÃ n sá»‘ khÃ´ng, trÃ¡nh lá»—i runtime); `sparse_output=False` (máº£ng dÃ y Ä‘áº·c Ä‘á»ƒ tÆ°Æ¡ng thÃ­ch pipeline); `drop=None` (giá»¯ láº¡i táº¥t cáº£ cÃ¡c cá»™t). Lá»±a chá»n `drop=None` lÃ  chá»§ Ã½: viá»‡c loáº¡i bá» má»™t cá»™t tham chiáº¿u sáº½ ngÄƒn SHAP waterfall plot vÃ  LIME gÃ¡n táº§m quan trá»ng (importance) cho danh má»¥c bá»‹ loáº¡i bá» Ä‘Ã³, lÃ m giáº£m kháº£ nÄƒng diá»…n giáº£i sau thá»±c nghiá»‡m (post-hoc interpretability).
 
-### 3.3 BinaryEncoder (biến nhị phân)
+### 3.3 BinaryEncoder (biáº¿n nhá»‹ phÃ¢n)
 
-Hai đặc trưng chỉ nhận đúng hai giá trị:
+Hai Ä‘áº·c trÆ°ng chá»‰ nháº­n Ä‘Ãºng hai giÃ¡ trá»‹:
 
-- `gender`: M → 1, F → 0
-- `disability`: Y → 1, N → 0
+- `gender`: M â†’ 1, F â†’ 0
+- `disability`: Y â†’ 1, N â†’ 0
 
-Một lớp `BinaryEncoder` tùy chỉnh (kế thừa `BaseEstimator` / `TransformerMixin` của sklearn) triển khai bảng tra cứu cố định này. Không cần bước fit thực sự vì ánh xạ là hằng số được định nghĩa trong dự án; phương thức `fit` là no-op được giữ lại để tương thích với `ColumnTransformer`.
+Má»™t lá»›p `BinaryEncoder` tÃ¹y chá»‰nh (káº¿ thá»«a `BaseEstimator` / `TransformerMixin` cá»§a sklearn) triá»ƒn khai báº£ng tra cá»©u cá»‘ Ä‘á»‹nh nÃ y. KhÃ´ng cáº§n bÆ°á»›c fit thá»±c sá»± vÃ¬ Ã¡nh xáº¡ lÃ  háº±ng sá»‘ Ä‘Æ°á»£c Ä‘á»‹nh nghÄ©a trong dá»± Ã¡n; phÆ°Æ¡ng thá»©c `fit` lÃ  no-op Ä‘Æ°á»£c giá»¯ láº¡i Ä‘á»ƒ tÆ°Æ¡ng thÃ­ch vá»›i `ColumnTransformer`.
 
-### 3.4 Passthrough (đặc trưng chỉ báo)
+### 3.4 Passthrough (Ä‘áº·c trÆ°ng chá»‰ bÃ¡o)
 
-Cờ `not_submitted` được tạo ra bởi bước feature engineering dưới dạng số nguyên 0/1 và không cần biến đổi thêm. Nó được chuyển qua `ColumnTransformer` thông qua transformer `'passthrough'` để bảo toàn sự hiện diện trong ma trận đặc trưng đầu ra.
+Cá» `not_submitted` Ä‘Æ°á»£c táº¡o ra bá»Ÿi bÆ°á»›c feature engineering dÆ°á»›i dáº¡ng sá»‘ nguyÃªn 0/1 vÃ  khÃ´ng cáº§n biáº¿n Ä‘á»•i thÃªm. NÃ³ Ä‘Æ°á»£c chuyá»ƒn qua `ColumnTransformer` thÃ´ng qua transformer `'passthrough'` Ä‘á»ƒ báº£o toÃ n sá»± hiá»‡n diá»‡n trong ma tráº­n Ä‘áº·c trÆ°ng Ä‘áº§u ra.
 
 ---
 
-## 4. Chuẩn hóa Thang đo (Standardisation / Scaling)
+## 4. Chuáº©n hÃ³a Thang Ä‘o (Standardisation / Scaling)
 
 ### 4.1 StandardScaler
 
-Toàn bộ 19 biến định lượng được chuẩn hóa về trung bình bằng không và phương sai đơn vị sử dụng `StandardScaler` của sklearn (chuẩn hóa z-score: x′ = (x − μ) / σ). Sau các biến đổi log1p hoặc winsorize đã áp dụng trong giai đoạn xử lý ngoại lai, mỗi cột định lượng được dịch chuyển và thu phóng độc lập sao cho phân phối trên tập huấn luyện có trung bình 0 và độ lệch chuẩn 1.
+ToÃ n bá»™ 19 biáº¿n Ä‘á»‹nh lÆ°á»£ng Ä‘Æ°á»£c chuáº©n hÃ³a vá» trung bÃ¬nh báº±ng khÃ´ng vÃ  phÆ°Æ¡ng sai Ä‘Æ¡n vá»‹ sá»­ dá»¥ng `StandardScaler` cá»§a sklearn (chuáº©n hÃ³a z-score: xâ€² = (x âˆ’ Î¼) / Ïƒ). Sau cÃ¡c biáº¿n Ä‘á»•i log1p hoáº·c winsorize Ä‘Ã£ Ã¡p dá»¥ng trong giai Ä‘oáº¡n xá»­ lÃ½ ngoáº¡i lai, má»—i cá»™t Ä‘á»‹nh lÆ°á»£ng Ä‘Æ°á»£c dá»‹ch chuyá»ƒn vÃ  thu phÃ³ng Ä‘á»™c láº­p sao cho phÃ¢n phá»‘i trÃªn táº­p huáº¥n luyá»‡n cÃ³ trung bÃ¬nh 0 vÃ  Ä‘á»™ lá»‡ch chuáº©n 1.
 
-### 4.2 Căn cứ
+### 4.2 CÄƒn cá»©
 
-Số đếm nhấp chuột VLE dao động từ không đến vài nghìn; biến điểm số trải dài từ 0 đến 100. Không có chuẩn hóa, các mô hình tính khoảng cách hoặc độ lớn gradient (Logistic Regression, Mạng nơ-ron nhân tạo / Artificial Neural Network) sẽ bị thống trị bởi các biến clickstream có biên độ cao. Mặc dù các mô hình dựa trên cây (Random Forest, XGBoost, LightGBM) phân chia trên ngưỡng đặc trưng và về lý thuyết không nhạy cảm với thang đo, `StandardScaler` được áp dụng đồng nhất trên toàn bộ đặc trưng định lượng để đảm bảo tính nhất quán của pipeline: một lần gọi `preprocess()` tạo ra ma trận đặc trưng hợp lệ cho mọi lớp mô hình mà không cần can thiệp thêm.
+Sá»‘ Ä‘áº¿m nháº¥p chuá»™t VLE dao Ä‘á»™ng tá»« khÃ´ng Ä‘áº¿n vÃ i nghÃ¬n; biáº¿n Ä‘iá»ƒm sá»‘ tráº£i dÃ i tá»« 0 Ä‘áº¿n 100. KhÃ´ng cÃ³ chuáº©n hÃ³a, cÃ¡c mÃ´ hÃ¬nh tÃ­nh khoáº£ng cÃ¡ch hoáº·c Ä‘á»™ lá»›n gradient (Logistic Regression, Máº¡ng nÆ¡-ron nhÃ¢n táº¡o / Artificial Neural Network) sáº½ bá»‹ thá»‘ng trá»‹ bá»Ÿi cÃ¡c biáº¿n clickstream cÃ³ biÃªn Ä‘á»™ cao. Máº·c dÃ¹ cÃ¡c mÃ´ hÃ¬nh dá»±a trÃªn cÃ¢y (Random Forest, XGBoost, LightGBM) phÃ¢n chia trÃªn ngÆ°á»¡ng Ä‘áº·c trÆ°ng vÃ  vá» lÃ½ thuyáº¿t khÃ´ng nháº¡y cáº£m vá»›i thang Ä‘o, `StandardScaler` Ä‘Æ°á»£c Ã¡p dá»¥ng Ä‘á»“ng nháº¥t trÃªn toÃ n bá»™ Ä‘áº·c trÆ°ng Ä‘á»‹nh lÆ°á»£ng Ä‘á»ƒ Ä‘áº£m báº£o tÃ­nh nháº¥t quÃ¡n cá»§a pipeline: má»™t láº§n gá»i `preprocess()` táº¡o ra ma tráº­n Ä‘áº·c trÆ°ng há»£p lá»‡ cho má»i lá»›p mÃ´ hÃ¬nh mÃ  khÃ´ng cáº§n can thiá»‡p thÃªm.
 
-### 4.3 Triển khai Phòng tránh Rò rỉ (Anti-Leakage)
+### 4.3 Triá»ƒn khai PhÃ²ng trÃ¡nh RÃ² rá»‰ (Anti-Leakage)
 
-Bộ chuẩn hóa (scaler) chỉ được khớp (fit) trên tập huấn luyện. Các tham số đã khớp (`scaler.mean_` và `scaler.var_`) được tính toán hoàn toàn từ các quan sát huấn luyện. Phương thức `.transform()` — áp dụng trung bình và phương sai đã lưu — sau đó được gọi trên cả mảng huấn luyện và kiểm tra. Hàm tắt `.fit_transform()` không bao giờ được gọi trên toàn bộ tập dữ liệu. Điều này ngăn chặn bất kỳ thông tin thống kê nào từ tập kiểm tra ảnh hưởng đến phép biến đổi áp dụng lên dữ liệu huấn luyện, vốn sẽ cấu thành rò rỉ dữ liệu (data leakage) và tạo ra ước lượng khả năng tổng quát hóa quá lạc quan.
+Bá»™ chuáº©n hÃ³a (scaler) chá»‰ Ä‘Æ°á»£c khá»›p (fit) trÃªn táº­p huáº¥n luyá»‡n. CÃ¡c tham sá»‘ Ä‘Ã£ khá»›p (`scaler.mean_` vÃ  `scaler.var_`) Ä‘Æ°á»£c tÃ­nh toÃ¡n hoÃ n toÃ n tá»« cÃ¡c quan sÃ¡t huáº¥n luyá»‡n. PhÆ°Æ¡ng thá»©c `.transform()` â€” Ã¡p dá»¥ng trung bÃ¬nh vÃ  phÆ°Æ¡ng sai Ä‘Ã£ lÆ°u â€” sau Ä‘Ã³ Ä‘Æ°á»£c gá»i trÃªn cáº£ máº£ng huáº¥n luyá»‡n vÃ  kiá»ƒm tra. HÃ m táº¯t `.fit_transform()` khÃ´ng bao giá» Ä‘Æ°á»£c gá»i trÃªn toÃ n bá»™ táº­p dá»¯ liá»‡u. Äiá»u nÃ y ngÄƒn cháº·n báº¥t ká»³ thÃ´ng tin thá»‘ng kÃª nÃ o tá»« táº­p kiá»ƒm tra áº£nh hÆ°á»Ÿng Ä‘áº¿n phÃ©p biáº¿n Ä‘á»•i Ã¡p dá»¥ng lÃªn dá»¯ liá»‡u huáº¥n luyá»‡n, vá»‘n sáº½ cáº¥u thÃ nh rÃ² rá»‰ dá»¯ liá»‡u (data leakage) vÃ  táº¡o ra Æ°á»›c lÆ°á»£ng kháº£ nÄƒng tá»•ng quÃ¡t hÃ³a quÃ¡ láº¡c quan.
 
-**Bảng 2. Tóm tắt mã hóa và chuẩn hóa**
+**Báº£ng 2. TÃ³m táº¯t mÃ£ hÃ³a vÃ  chuáº©n hÃ³a**
 
-| Transformer | Đặc trưng | Cấu hình chính |
+| Transformer | Äáº·c trÆ°ng | Cáº¥u hÃ¬nh chÃ­nh |
 |-------------|-----------|----------------|
-| `StandardScaler` | 19 biến định lượng | Fit trên train only; `scaler.mean_` tính từ train |
-| `OrdinalEncoder` | 3 biến thứ bậc | Danh sách danh mục tường minh; `handle_unknown='use_encoded_value'`, `unknown_value=-1` |
-| `OneHotEncoder` | 3 biến danh định | `handle_unknown='ignore'`, `sparse_output=False`, `drop=None` |
-| `BinaryEncoder` (tùy chỉnh) | 2 biến nhị phân | Bảng tra cứu cố định: M/Y→1, F/N→0 |
-| `passthrough` | 1 biến chỉ báo | Không biến đổi |
+| `StandardScaler` | 19 biáº¿n Ä‘á»‹nh lÆ°á»£ng | Fit trÃªn train only; `scaler.mean_` tÃ­nh tá»« train |
+| `OrdinalEncoder` | 3 biáº¿n thá»© báº­c | Danh sÃ¡ch danh má»¥c tÆ°á»ng minh; `handle_unknown='use_encoded_value'`, `unknown_value=-1` |
+| `OneHotEncoder` | 3 biáº¿n danh Ä‘á»‹nh | `handle_unknown='ignore'`, `sparse_output=False`, `drop=None` |
+| `BinaryEncoder` (tÃ¹y chá»‰nh) | 2 biáº¿n nhá»‹ phÃ¢n | Báº£ng tra cá»©u cá»‘ Ä‘á»‹nh: M/Yâ†’1, F/Nâ†’0 |
+| `passthrough` | 1 biáº¿n chá»‰ bÃ¡o | KhÃ´ng biáº¿n Ä‘á»•i |
 
 ---
 
-## 5. Trình tự Pipeline Biến đổi
+## 5. TrÃ¬nh tá»± Pipeline Biáº¿n Ä‘á»•i
 
-Trình tự pipeline phòng tránh rò rỉ đầy đủ, được triển khai trong `preprocess()`, là:
+TrÃ¬nh tá»± pipeline phÃ²ng trÃ¡nh rÃ² rá»‰ Ä‘áº§y Ä‘á»§, Ä‘Æ°á»£c triá»ƒn khai trong `preprocess()`, lÃ :
 
-1. **Phân chia train/test** — thực hiện bên ngoài module này, trước mọi bước fit.
-2. **`handle_missing(X_train)`** — logic điền khuyết được rút ra từ dữ liệu huấn luyện; cùng quy tắc đó được áp dụng cho tập kiểm tra mà không fit lại.
-3. **`handle_outliers(X_train)`** — các biến đổi log1p và winsorize được áp dụng; tập kiểm tra được biến đổi theo cùng quy tắc xác định (deterministic).
-4. **`ColumnTransformer.fit(X_train)`** — tất cả các transformer (StandardScaler, OrdinalEncoder, OneHotEncoder, BinaryEncoder) chỉ được khớp trên tập huấn luyện.
-5. **`ColumnTransformer.transform(X_train)` và `.transform(X_test)`** — transformer đã khớp được áp dụng cho cả hai tập.
-6. **Tái lấy mẫu (SMOTE/ADASYN)** — chỉ áp dụng trên mảng huấn luyện đã biến đổi; tập kiểm tra không bao giờ được tái lấy mẫu.
+1. **PhÃ¢n chia train/test** â€” thá»±c hiá»‡n bÃªn ngoÃ i module nÃ y, trÆ°á»›c má»i bÆ°á»›c fit.
+2. **`handle_missing(X_train)`** â€” logic Ä‘iá»n khuyáº¿t Ä‘Æ°á»£c rÃºt ra tá»« dá»¯ liá»‡u huáº¥n luyá»‡n; cÃ¹ng quy táº¯c Ä‘Ã³ Ä‘Æ°á»£c Ã¡p dá»¥ng cho táº­p kiá»ƒm tra mÃ  khÃ´ng fit láº¡i.
+3. **`handle_outliers(X_train)`** â€” cÃ¡c biáº¿n Ä‘á»•i log1p vÃ  winsorize Ä‘Æ°á»£c Ã¡p dá»¥ng; táº­p kiá»ƒm tra Ä‘Æ°á»£c biáº¿n Ä‘á»•i theo cÃ¹ng quy táº¯c xÃ¡c Ä‘á»‹nh (deterministic).
+4. **`ColumnTransformer.fit(X_train)`** â€” táº¥t cáº£ cÃ¡c transformer (StandardScaler, OrdinalEncoder, OneHotEncoder, BinaryEncoder) chá»‰ Ä‘Æ°á»£c khá»›p trÃªn táº­p huáº¥n luyá»‡n.
+5. **`ColumnTransformer.transform(X_train)` vÃ  `.transform(X_test)`** â€” transformer Ä‘Ã£ khá»›p Ä‘Æ°á»£c Ã¡p dá»¥ng cho cáº£ hai táº­p.
+6. **TÃ¡i láº¥y máº«u (SMOTE/ADASYN)** â€” chá»‰ Ã¡p dá»¥ng trÃªn máº£ng huáº¥n luyá»‡n Ä‘Ã£ biáº¿n Ä‘á»•i; táº­p kiá»ƒm tra khÃ´ng bao giá» Ä‘Æ°á»£c tÃ¡i láº¥y máº«u.
 
-Trình tự này được tham chiếu chéo trong tài liệu Preprocessing Sequence (Tài liệu 07).
-
----
-
-## 6. Thuộc tính Đầu ra
-
-`ColumnTransformer` đã khớp được tuần tự hóa vào `scaler.pkl` thông qua `joblib.dump()` để đảm bảo khả năng tái tạo (reproducibility) và triển khai. Hàm `preprocess()` trả về bốn đối tượng: mảng huấn luyện đã biến đổi, mảng kiểm tra đã biến đổi, transformer đã khớp, và danh sách tên đặc trưng thu được từ `ct.get_feature_names_out()`.
-
-Các thuộc tính đầu ra đã được xác minh:
-
-- **Số cột**: 49 cột sau khi mã hóa (19 định lượng + 3 thứ bậc + kết quả mở rộng one-hot của region/code_module/code_presentation + 2 nhị phân + 1 chỉ báo).
-- **Giá trị khuyết**: không có giá trị NaN trong bất kỳ mảng đầu ra nào sau khi biến đổi.
-- **Tên đặc trưng**: được giữ đầy đủ theo chuẩn `snake_case` với tiền tố tên transformer (ví dụ: `num__total_clicks`, `nominal__region_East Anglian Region`) để gán nhãn tường minh trong SHAP waterfall plot và hiển thị tầm quan trọng đặc trưng của LIME.
+TrÃ¬nh tá»± nÃ y Ä‘Æ°á»£c tham chiáº¿u chÃ©o trong tÃ i liá»‡u Preprocessing Sequence (TÃ i liá»‡u 07).
 
 ---
 
-## 7. Quy tắc Đặt tên Đặc trưng và Khả năng Diễn giải Sau thực nghiệm
+## 6. Thuá»™c tÃ­nh Äáº§u ra
 
-Việc sử dụng nhất quán tên cột mô tả theo chuẩn `snake_case` xuyên suốt `preprocessing.py` (ví dụ: `mean_clicks_per_active_day`, `weighted_score_to_date`, `days_since_last_activity`) đảm bảo rằng kết quả đầu ra của SHAP và LIME tự giải thích. Khi `ColumnTransformer` được cấu hình với `verbose_feature_names_out=True`, mỗi cột đầu ra mang tiền tố transformer giúp xác định nguồn gốc, cho phép nhà phân tích truy ngược bất kỳ giá trị tầm quan trọng đặc trưng nào về biến nguồn thô tương ứng mà không cần tra cứu từ điển dữ liệu riêng biệt. Lựa chọn thiết kế này trực tiếp hỗ trợ yêu cầu khả năng diễn giải của bài toán dự đoán nguy cơ sinh viên, trong đó giáo viên và cố vấn học tập phải hiểu được hành vi sinh viên hoặc thuộc tính nhân khẩu học nào thúc đẩy từng cảnh báo nguy cơ cá nhân.
+`ColumnTransformer` Ä‘Ã£ khá»›p Ä‘Æ°á»£c tuáº§n tá»± hÃ³a vÃ o `scaler.pkl` thÃ´ng qua `joblib.dump()` Ä‘á»ƒ Ä‘áº£m báº£o kháº£ nÄƒng tÃ¡i táº¡o (reprovansonibility) vÃ  triá»ƒn khai. HÃ m `preprocess()` tráº£ vá» bá»‘n Ä‘á»‘i tÆ°á»£ng: máº£ng huáº¥n luyá»‡n Ä‘Ã£ biáº¿n Ä‘á»•i, máº£ng kiá»ƒm tra Ä‘Ã£ biáº¿n Ä‘á»•i, transformer Ä‘Ã£ khá»›p, vÃ  danh sÃ¡ch tÃªn Ä‘áº·c trÆ°ng thu Ä‘Æ°á»£c tá»« `ct.get_feature_names_out()`.
+
+CÃ¡c thuá»™c tÃ­nh Ä‘áº§u ra Ä‘Ã£ Ä‘Æ°á»£c xÃ¡c minh:
+
+- **Sá»‘ cá»™t**: 49 cá»™t sau khi mÃ£ hÃ³a (19 Ä‘á»‹nh lÆ°á»£ng + 3 thá»© báº­c + káº¿t quáº£ má»Ÿ rá»™ng one-hot cá»§a region/code_module/code_presentation + 2 nhá»‹ phÃ¢n + 1 chá»‰ bÃ¡o).
+- **GiÃ¡ trá»‹ khuyáº¿t**: khÃ´ng cÃ³ giÃ¡ trá»‹ NaN trong báº¥t ká»³ máº£ng Ä‘áº§u ra nÃ o sau khi biáº¿n Ä‘á»•i.
+- **TÃªn Ä‘áº·c trÆ°ng**: Ä‘Æ°á»£c giá»¯ Ä‘áº§y Ä‘á»§ theo chuáº©n `snake_case` vá»›i tiá»n tá»‘ tÃªn transformer (vÃ­ dá»¥: `num__total_clicks`, `nominal__region_East Anglian Region`) Ä‘á»ƒ gÃ¡n nhÃ£n tÆ°á»ng minh trong SHAP waterfall plot vÃ  hiá»ƒn thá»‹ táº§m quan trá»ng Ä‘áº·c trÆ°ng cá»§a LIME.
 
 ---
 
-*Biên soạn bởi Nhóm 5 DSP391m. Toàn bộ logic biến đổi tham chiếu `src/features/preprocessing.py`, đã commit vào kho mã nguồn dự án (nhánh: main).*
+## 7. Quy táº¯c Äáº·t tÃªn Äáº·c trÆ°ng vÃ  Kháº£ nÄƒng Diá»…n giáº£i Sau thá»±c nghiá»‡m
+
+Viá»‡c sá»­ dá»¥ng nháº¥t quÃ¡n tÃªn cá»™t mÃ´ táº£ theo chuáº©n `snake_case` xuyÃªn suá»‘t `preprocessing.py` (vÃ­ dá»¥: `mean_clicks_per_active_day`, `weighted_score_to_date`, `days_since_last_activity`) Ä‘áº£m báº£o ráº±ng káº¿t quáº£ Ä‘áº§u ra cá»§a SHAP vÃ  LIME tá»± giáº£i thÃ­ch. Khi `ColumnTransformer` Ä‘Æ°á»£c cáº¥u hÃ¬nh vá»›i `verbose_feature_names_out=True`, má»—i cá»™t Ä‘áº§u ra mang tiá»n tá»‘ transformer giÃºp xÃ¡c Ä‘á»‹nh nguá»“n gá»‘c, cho phÃ©p nhÃ  phÃ¢n tÃ­ch truy ngÆ°á»£c báº¥t ká»³ giÃ¡ trá»‹ táº§m quan trá»ng Ä‘áº·c trÆ°ng nÃ o vá» biáº¿n nguá»“n thÃ´ tÆ°Æ¡ng á»©ng mÃ  khÃ´ng cáº§n tra cá»©u tá»« Ä‘iá»ƒn dá»¯ liá»‡u riÃªng biá»‡t. Lá»±a chá»n thiáº¿t káº¿ nÃ y trá»±c tiáº¿p há»— trá»£ yÃªu cáº§u kháº£ nÄƒng diá»…n giáº£i cá»§a bÃ i toÃ¡n dá»± Ä‘oÃ¡n nguy cÆ¡ sinh viÃªn, trong Ä‘Ã³ giÃ¡o viÃªn vÃ  cá»‘ váº¥n há»c táº­p pháº£i hiá»ƒu Ä‘Æ°á»£c hÃ nh vi sinh viÃªn hoáº·c thuá»™c tÃ­nh nhÃ¢n kháº©u há»c nÃ o thÃºc Ä‘áº©y tá»«ng cáº£nh bÃ¡o nguy cÆ¡ cÃ¡ nhÃ¢n.
+
+---
+
+*BiÃªn soáº¡n bá»Ÿi NhÃ³m 5 DSP391m. ToÃ n bá»™ logic biáº¿n Ä‘á»•i tham chiáº¿u `src/features/preprocessing.py`, Ä‘Ã£ commit vÃ o kho mÃ£ nguá»“n dá»± Ã¡n (nhÃ¡nh: main).*
+

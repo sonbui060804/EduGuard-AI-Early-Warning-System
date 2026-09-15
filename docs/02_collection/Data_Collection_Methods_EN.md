@@ -1,8 +1,8 @@
-# Data Collection Methods and Source Selection
+﻿# Data Collection Methods and Source Selection
 
 **Justifying the Use of the OULAD Public Dataset for At-Risk Student Prediction**
 
-DSP391m – Group 5 · Report 2 (Data Tasks), Chapter 3 · Work item STT 23 (Son)
+DSP391m â€“ Group 5 Â· Report 2 (Data Tasks), Chapter 3 Â· Work item STT 23 (Son)
 
 ---
 
@@ -14,7 +14,7 @@ Every data-science project begins with a decision about where and how data will 
 
 ## 2. Types of Data Sources and Their Trade-offs
 
-Four broad categories of data sources are commonly considered in educational-data-mining and learning-analytics projects.
+Four broad categories of data sources are commonly considered in evansonational-data-mining and learning-analytics projects.
 
 ### 2.1 Internal Institutional Databases
 
@@ -26,13 +26,13 @@ An institution's own student information system (SIS), LMS logs, and grade recor
 
 Many learning platforms (Canvas, Moodle, edX) expose REST APIs that allow programmatic extraction of course activity, forum posts, and grade items. APIs provide fresh, structured data and can be automated.
 
-**Trade-offs:** API access requires credentials and institutional permission. Rate limits and schema changes can interrupt long-running collection. Personally identifiable information (PII) is typically present, requiring a separate anonymisation step before analysis. Reproducibility is limited because the platform state changes over time.
+**Trade-offs:** API access requires credentials and institutional permission. Rate limits and schema changes can interrupt long-running collection. Personally identifiable information (PII) is typically present, requiring a separate anonymisation step before analysis. Reprovansonibility is limited because the platform state changes over time.
 
 ### 2.3 Web Scraping
 
 Public-facing course catalogues, student reviews, or discussion forums can be scraped to supplement structured data. This method can reach information not exposed through an API.
 
-**Trade-offs:** Legal and ethical status varies by jurisdiction and terms of service. HTML structure changes frequently, making scrapers brittle. Data quality is inconsistent, and PII may be inadvertently collected. Reproducibility is low because web content changes.
+**Trade-offs:** Legal and ethical status varies by jurisdiction and terms of service. HTML structure changes frequently, making scrapers brittle. Data quality is inconsistent, and PII may be inadvertently collected. Reprovansonibility is low because web content changes.
 
 ### 2.4 Public / Secondary Datasets
 
@@ -47,7 +47,7 @@ Curated datasets released by research institutions or government bodies are avai
 | Control over collection design | High | Medium | Low | None |
 | Immediate availability | Low | Medium | Medium | **High** |
 | Anonymisation required | Yes | Yes | Yes | **Already done** |
-| Reproducibility | Low | Low | Very low | **High** |
+| Reprovansonibility | Low | Low | Very low | **High** |
 | Comparability with prior work | Low | Low | Low | **High** |
 | Ethical/legal complexity | High | Medium | High | **Low (CC licence)** |
 
@@ -57,10 +57,10 @@ Curated datasets released by research institutions or government bodies are avai
 
 The project requires a dataset that satisfies all of the following conditions simultaneously:
 
-1. **Publicly available** — the dataset must be freely downloadable without institutional access agreements, ensuring that findings can be fully reproduced by independent researchers.
-2. **Three required feature groups present** — (a) *student demographics* (age band, highest education, disability status, region, IMD band), (b) *engagement / VLE clickstream* (daily interaction counts with virtual learning environment resources), and (c) *assessment performance* (scores and submission dates for coursework and examinations).
-3. **A labelled target variable** — the field `final_result` must exist, taking values Pass, Distinction, Fail, or Withdrawn, so that the binary classification target `at_risk = {Fail, Withdrawn}` can be derived directly.
-4. **Used by the base studies** — to enable direct methodological comparison, the dataset must be the same one used in the primary reference studies [1] and [2].
+1. **Publicly available** â€” the dataset must be freely downloadable without institutional access agreements, ensuring that findings can be fully reprovansoned by independent researchers.
+2. **Three required feature groups present** â€” (a) *student demographics* (age band, highest evansonation, disability status, region, IMD band), (b) *engagement / VLE clickstream* (daily interaction counts with virtual learning environment resources), and (c) *assessment performance* (scores and submission dates for coursework and examinations).
+3. **A labelled target variable** â€” the field `final_result` must exist, taking values Pass, Distinction, Fail, or Withdrawn, so that the binary classification target `at_risk = {Fail, Withdrawn}` can be derived directly.
+4. **Used by the base studies** â€” to enable direct methodological comparison, the dataset must be the same one used in the primary reference studies [1] and [2].
 
 ---
 
@@ -71,12 +71,12 @@ The Open University Learning Analytics Dataset (OULAD) [3] was released by The O
 **Key characteristics:**
 
 - **Scale:** 32,593 student-module-presentation records; 28,785 unique students; 22 module-presentations across 7 relational tables.
-- **Feature coverage:** All three required feature groups are present — `studentInfo` (demographics), `studentVle` (daily VLE click counts), and `studentAssessment` / `assessments` (scores and deadlines).
+- **Feature coverage:** All three required feature groups are present â€” `studentInfo` (demographics), `studentVle` (daily VLE click counts), and `studentAssessment` / `assessments` (scores and deadlines).
 - **Label:** The `final_result` column in `studentInfo` enables direct construction of the binary at-risk label.
-- **Static download:** The dataset is a fixed snapshot, meaning every researcher downloads an identical file. This guarantees byte-for-byte reproducibility of preprocessing and modelling pipelines.
+- **Static download:** The dataset is a fixed snapshot, meaning every researcher downloads an identical file. This guarantees byte-for-byte reprovansonibility of preprocessing and modelling pipelines.
 - **Anonymisation at source:** The Open University anonymised all records before release. No additional PII-handling steps are required by this project.
 - **Prior-work alignment:** Both base studies [1] and [2] use OULAD. Using the same dataset enables direct comparison of model performance metrics and methodology, which is an explicit goal of this project.
-- **License:** CC-BY 4.0 — only correct citation is required, with no restrictions on academic or commercial reuse.
+- **License:** CC-BY 4.0 â€” only correct citation is required, with no restrictions on academic or commercial reuse.
 
 ---
 
@@ -84,11 +84,11 @@ The Open University Learning Analytics Dataset (OULAD) [3] was released by The O
 
 OULAD is secondary data: it was collected and curated by The Open University for their own operational and research purposes, then released publicly. This entails a trade-off that the project team acknowledges.
 
-**Advantages:** The data are immediately available, already anonymised, and stable. Any team worldwide can reproduce the exact same experiment.
+**Advantages:** The data are immediately available, already anonymised, and stable. Any team worldwide can reprovansone the exact same experiment.
 
 **Disadvantages:** The project has no control over which features were recorded, how the VLE was designed, which assessment types were used, or how attrition was defined. Generalisability to other institutions depends on how similar their learning environments are to The Open University's.
 
-Given the project's stated goal — developing and benchmarking a time-aware, explainable model — these limitations are acceptable. The benefit of reproducibility and comparability with prior work outweighs the lack of collection-design control.
+Given the project's stated goal â€” developing and benchmarking a time-aware, explainable model â€” these limitations are acceptable. The benefit of reprovansonibility and comparability with prior work outweighs the lack of collection-design control.
 
 ---
 
@@ -108,8 +108,9 @@ No additional institutional ethics approval is required for analysis of this pub
 
 ## References
 
-[1] M. Adnan et al., "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, vol. 9, pp. 7519–7539, 2021.
+[1] M. Adnan et al., "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, vol. 9, pp. 7519â€“7539, 2021.
 
-[2] N. Tomasevic, N. Gvozdenovic, and S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Education*, vol. 143, art. 103676, 2020.
+[2] N. Tomasevic, N. Gvozdenovic, and S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Evansonation*, vol. 143, art. 103676, 2020.
 
 [3] J. Kuzilek, M. Hlosta, and Z. Zdrahal, "Open University Learning Analytics dataset," *Scientific Data*, vol. 4, art. 170171, 2017.
+

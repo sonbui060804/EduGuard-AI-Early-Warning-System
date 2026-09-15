@@ -1,76 +1,77 @@
-# Các nghiên cứu nền: Đối chiếu quy trình tiền xử lý OULAD
+﻿# CÃ¡c nghiÃªn cá»©u ná»n: Äá»‘i chiáº¿u quy trÃ¬nh tiá»n xá»­ lÃ½ OULAD
 
-**Phụ đề:** So sánh thu thập, làm sạch, tạo đặc trưng và phân chia dữ liệu giữa bốn nghiên cứu nền để lập luận cho các lựa chọn của nhóm.
+**Phá»¥ Ä‘á»:** So sÃ¡nh thu tháº­p, lÃ m sáº¡ch, táº¡o Ä‘áº·c trÆ°ng vÃ  phÃ¢n chia dá»¯ liá»‡u giá»¯a bá»‘n nghiÃªn cá»©u ná»n Ä‘á»ƒ láº­p luáº­n cho cÃ¡c lá»±a chá»n cá»§a nhÃ³m.
 
-**DSP391m – Nhóm 5 · Báo cáo 2 (Tác vụ dữ liệu), Chương 3 · Hạng mục STT 24 (Vinh)**
-
----
-
-> **Ghi chú kiểm chứng.** Các ô dưới đây đã được đối chiếu với bản gốc: toàn văn cho [1], [2] và [4]; phần tóm tắt cùng các bài trích dẫn độc lập cho [5] (toàn văn nhà xuất bản bị giới hạn). Những ô nguồn không nêu rõ được đánh dấu *"không nêu rõ"* thay vì suy đoán.
+**DSP391m â€“ NhÃ³m 5 Â· BÃ¡o cÃ¡o 2 (TÃ¡c vá»¥ dá»¯ liá»‡u), ChÆ°Æ¡ng 3 Â· Háº¡ng má»¥c STT 24 (Vinh)**
 
 ---
 
-## 1. Giới thiệu
-
-Bộ dữ liệu Open University Learning Analytics Dataset (OULAD) — mô tả bởi Kuzilek và cộng sự [3] — gồm bảy bảng quan hệ bao phủ 32.593 lượt đăng ký sinh viên, gồm hồ sơ nhân khẩu học, tương tác clickstream trên môi trường học ảo (VLE) và kết quả đánh giá. Vì nhiều nhóm nghiên cứu đã dùng bộ dữ liệu này, các quyết định tiền xử lý của họ là cơ sở thực tiễn cho dự án. Chương này khảo sát bốn nghiên cứu và rút ra bài học định hướng pipeline của nhóm.
+> **Ghi chÃº kiá»ƒm chá»©ng.** CÃ¡c Ã´ dÆ°á»›i Ä‘Ã¢y Ä‘Ã£ Ä‘Æ°á»£c Ä‘á»‘i chiáº¿u vá»›i báº£n gá»‘c: toÃ n vÄƒn cho [1], [2] vÃ  [4]; pháº§n tÃ³m táº¯t cÃ¹ng cÃ¡c bÃ i trÃ­ch dáº«n Ä‘á»™c láº­p cho [5] (toÃ n vÄƒn nhÃ  xuáº¥t báº£n bá»‹ giá»›i háº¡n). Nhá»¯ng Ã´ nguá»“n khÃ´ng nÃªu rÃµ Ä‘Æ°á»£c Ä‘Ã¡nh dáº¥u *"khÃ´ng nÃªu rÃµ"* thay vÃ¬ suy Ä‘oÃ¡n.
 
 ---
 
-## 2. Bảng đối chiếu quy trình tiền xử lý của các nghiên cứu nền
+## 1. Giá»›i thiá»‡u
 
-| Nghiên cứu | **Thu thập** | **Làm sạch** | **Tạo đặc trưng** | **Phân chia / Kiểm định** |
+Bá»™ dá»¯ liá»‡u Open University Learning Analytics Dataset (OULAD) â€” mÃ´ táº£ bá»Ÿi Kuzilek vÃ  cá»™ng sá»± [3] â€” gá»“m báº£y báº£ng quan há»‡ bao phá»§ 32.593 lÆ°á»£t Ä‘Äƒng kÃ½ sinh viÃªn, gá»“m há»“ sÆ¡ nhÃ¢n kháº©u há»c, tÆ°Æ¡ng tÃ¡c clickstream trÃªn mÃ´i trÆ°á»ng há»c áº£o (VLE) vÃ  káº¿t quáº£ Ä‘Ã¡nh giÃ¡. VÃ¬ nhiá»u nhÃ³m nghiÃªn cá»©u Ä‘Ã£ dÃ¹ng bá»™ dá»¯ liá»‡u nÃ y, cÃ¡c quyáº¿t Ä‘á»‹nh tiá»n xá»­ lÃ½ cá»§a há» lÃ  cÆ¡ sá»Ÿ thá»±c tiá»…n cho dá»± Ã¡n. ChÆ°Æ¡ng nÃ y kháº£o sÃ¡t bá»‘n nghiÃªn cá»©u vÃ  rÃºt ra bÃ i há»c Ä‘á»‹nh hÆ°á»›ng pipeline cá»§a nhÃ³m.
+
+---
+
+## 2. Báº£ng Ä‘á»‘i chiáº¿u quy trÃ¬nh tiá»n xá»­ lÃ½ cá»§a cÃ¡c nghiÃªn cá»©u ná»n
+
+| NghiÃªn cá»©u | **Thu tháº­p** | **LÃ m sáº¡ch** | **Táº¡o Ä‘áº·c trÆ°ng** | **PhÃ¢n chia / Kiá»ƒm Ä‘á»‹nh** |
 |---|---|---|---|---|
-| **[1] Adnan và cộng sự (2021)** | Toàn bộ OULAD (22 môn–kỳ, 32.593 sinh viên); bảng nhân khẩu học, clickstream VLE và đánh giá [1] | Giá trị ngày khuyết được điền bằng **trung bình**; giữ Withdrawn như một lớp; không nêu lọc sinh viên không hoạt động [1] | Ba nhóm đặc trưng (nhân khẩu học; sum/mean click; điểm, điểm tương đối, số bài nộp muộn) tính tích luỹ tại **đầu khoá và 20/40/60/80/100%** thời lượng [1] | **CV 10-fold** cho mô hình ML, **chia 85/15** cho mô hình học sâu; xử lý mất cân bằng bằng **gộp lớp** (Pass+Distinction; Fail+Withdrawn), *không* tái lấy mẫu; chỉ số: accuracy, precision, recall, F-score, AUC [1] |
-| **[2] Tomasevic và cộng sự (2020)** | OULAD master table; thực nghiệm dùng **tập con môn DDD** (DDD_2013J + DDD_2014B) → **3.166 sinh viên** sau khi loại SV không thi cuối kỳ [2] | **Loại mọi dòng có giá trị khuyết** (NaN = bài đánh giá/thi không làm); đặc trưng **co giãn/chuẩn hoá về [0,1]** [2] | Ba nhóm — nhân khẩu học; tương tác (click VLE hàng ngày); kết quả (6 điểm đánh giá trung gian, điểm thi cuối, số lần thi); còn phân tích tích luỹ sau mỗi bài đánh giá. Phát hiện: **tương tác + kết quả** chiếm ưu thế; nhân khẩu học "không ảnh hưởng đáng kể" [2] | **Chia ngẫu nhiên 80:20** (train:test), hoặc **60:20:20** có tập validation cho ANN; **k-fold CV cho ANN** (không cho cây quyết định); F1 (phân loại) / RMSE (hồi quy), trung bình hoá qua **10 lần chạy** [2] |
-| **[4] Gunasekara & Saarela (2025)** | **Chỉ** OULAD, một **tập con 3 môn (AAA/BBB/CCC)** → 14 đặc trưng, 17.091 mẫu (Pass 5.963 / Fail 7.128); dùng làm benchmark minh hoạ XAI [4] | Loại dòng/cột khuyết quá nhiều; chuẩn hoá biến số về ~0–1; gộp lớp (Pass+Distinction; Fail+Withdrawn) [4] | **14 thuộc tính chọn/tổng hợp** từ OULAD (ví dụ `sum_click`, `assessment_count`, `delay`, `score` + nhân khẩu học); SHAP/LIME áp dụng hậu kỳ [4] | **CV 5-fold lặp 50 lần** (+ một lần chia train/test); **ANN vs Cây quyết định**; SHAP+LIME, chủ yếu giải thích cục bộ định tính [4] |
-| **[5] Liu và cộng sự (2023)** | OULAD; `studentInfo` ghép với clickstream `studentVle`; **5.341 sinh viên** sau làm sạch [5] | **Loại 180 sinh viên không có click** (→ 5.341); các bước khác *không nêu rõ* [5] | Số click trên **12 trang học (learning sites)**, tổng hợp theo **tuần và tháng** (ảnh hưởng nhất: content, subpage, homepage, quiz) [5] | Nhị phân pass/fail; **LSTM vs 1D-CNN vs ML truyền thống** (LSTM tốt nhất, ≈90%); độ chính xác tăng theo kỳ; tỉ lệ train/test và xử lý mất cân bằng *không nêu rõ* [5] |
+| **[1] Adnan vÃ  cá»™ng sá»± (2021)** | ToÃ n bá»™ OULAD (22 mÃ´nâ€“ká»³, 32.593 sinh viÃªn); báº£ng nhÃ¢n kháº©u há»c, clickstream VLE vÃ  Ä‘Ã¡nh giÃ¡ [1] | GiÃ¡ trá»‹ ngÃ y khuyáº¿t Ä‘Æ°á»£c Ä‘iá»n báº±ng **trung bÃ¬nh**; giá»¯ Withdrawn nhÆ° má»™t lá»›p; khÃ´ng nÃªu lá»c sinh viÃªn khÃ´ng hoáº¡t Ä‘á»™ng [1] | Ba nhÃ³m Ä‘áº·c trÆ°ng (nhÃ¢n kháº©u há»c; sum/mean click; Ä‘iá»ƒm, Ä‘iá»ƒm tÆ°Æ¡ng Ä‘á»‘i, sá»‘ bÃ i ná»™p muá»™n) tÃ­nh tÃ­ch luá»¹ táº¡i **Ä‘áº§u khoÃ¡ vÃ  20/40/60/80/100%** thá»i lÆ°á»£ng [1] | **CV 10-fold** cho mÃ´ hÃ¬nh ML, **chia 85/15** cho mÃ´ hÃ¬nh há»c sÃ¢u; xá»­ lÃ½ máº¥t cÃ¢n báº±ng báº±ng **gá»™p lá»›p** (Pass+Distinction; Fail+Withdrawn), *khÃ´ng* tÃ¡i láº¥y máº«u; chá»‰ sá»‘: accuracy, precision, recall, F-score, AUC [1] |
+| **[2] Tomasevic vÃ  cá»™ng sá»± (2020)** | OULAD master table; thá»±c nghiá»‡m dÃ¹ng **táº­p con mÃ´n DDD** (DDD_2013J + DDD_2014B) â†’ **3.166 sinh viÃªn** sau khi loáº¡i SV khÃ´ng thi cuá»‘i ká»³ [2] | **Loáº¡i má»i dÃ²ng cÃ³ giÃ¡ trá»‹ khuyáº¿t** (NaN = bÃ i Ä‘Ã¡nh giÃ¡/thi khÃ´ng lÃ m); Ä‘áº·c trÆ°ng **co giÃ£n/chuáº©n hoÃ¡ vá» [0,1]** [2] | Ba nhÃ³m â€” nhÃ¢n kháº©u há»c; tÆ°Æ¡ng tÃ¡c (click VLE hÃ ng ngÃ y); káº¿t quáº£ (6 Ä‘iá»ƒm Ä‘Ã¡nh giÃ¡ trung gian, Ä‘iá»ƒm thi cuá»‘i, sá»‘ láº§n thi); cÃ²n phÃ¢n tÃ­ch tÃ­ch luá»¹ sau má»—i bÃ i Ä‘Ã¡nh giÃ¡. PhÃ¡t hiá»‡n: **tÆ°Æ¡ng tÃ¡c + káº¿t quáº£** chiáº¿m Æ°u tháº¿; nhÃ¢n kháº©u há»c "khÃ´ng áº£nh hÆ°á»Ÿng Ä‘Ã¡ng ká»ƒ" [2] | **Chia ngáº«u nhiÃªn 80:20** (train:test), hoáº·c **60:20:20** cÃ³ táº­p validation cho ANN; **k-fold CV cho ANN** (khÃ´ng cho cÃ¢y quyáº¿t Ä‘á»‹nh); F1 (phÃ¢n loáº¡i) / RMSE (há»“i quy), trung bÃ¬nh hoÃ¡ qua **10 láº§n cháº¡y** [2] |
+| **[4] Gunasekara & Saarela (2025)** | **Chá»‰** OULAD, má»™t **táº­p con 3 mÃ´n (AAA/BBB/CCC)** â†’ 14 Ä‘áº·c trÆ°ng, 17.091 máº«u (Pass 5.963 / Fail 7.128); dÃ¹ng lÃ m benchmark minh hoáº¡ XAI [4] | Loáº¡i dÃ²ng/cá»™t khuyáº¿t quÃ¡ nhiá»u; chuáº©n hoÃ¡ biáº¿n sá»‘ vá» ~0â€“1; gá»™p lá»›p (Pass+Distinction; Fail+Withdrawn) [4] | **14 thuá»™c tÃ­nh chá»n/tá»•ng há»£p** tá»« OULAD (vÃ­ dá»¥ `sum_click`, `assessment_count`, `delay`, `score` + nhÃ¢n kháº©u há»c); SHAP/LIME Ã¡p dá»¥ng háº­u ká»³ [4] | **CV 5-fold láº·p 50 láº§n** (+ má»™t láº§n chia train/test); **ANN vs CÃ¢y quyáº¿t Ä‘á»‹nh**; SHAP+LIME, chá»§ yáº¿u giáº£i thÃ­ch cá»¥c bá»™ Ä‘á»‹nh tÃ­nh [4] |
+| **[5] Liu vÃ  cá»™ng sá»± (2023)** | OULAD; `studentInfo` ghÃ©p vá»›i clickstream `studentVle`; **5.341 sinh viÃªn** sau lÃ m sáº¡ch [5] | **Loáº¡i 180 sinh viÃªn khÃ´ng cÃ³ click** (â†’ 5.341); cÃ¡c bÆ°á»›c khÃ¡c *khÃ´ng nÃªu rÃµ* [5] | Sá»‘ click trÃªn **12 trang há»c (learning sites)**, tá»•ng há»£p theo **tuáº§n vÃ  thÃ¡ng** (áº£nh hÆ°á»Ÿng nháº¥t: content, subpage, homepage, quiz) [5] | Nhá»‹ phÃ¢n pass/fail; **LSTM vs 1D-CNN vs ML truyá»n thá»‘ng** (LSTM tá»‘t nháº¥t, â‰ˆ90%); Ä‘á»™ chÃ­nh xÃ¡c tÄƒng theo ká»³; tá»‰ lá»‡ train/test vÃ  xá»­ lÃ½ máº¥t cÃ¢n báº±ng *khÃ´ng nÃªu rÃµ* [5] |
 
 ---
 
-## 3. Thảo luận
+## 3. Tháº£o luáº­n
 
-### 3.1 Thu thập
+### 3.1 Thu tháº­p
 
-Cả bốn nghiên cứu dùng OULAD [3] không thu thập thêm, nhưng phạm vi khác nhau: Adnan và cộng sự [1] dùng toàn bộ và tích hợp cả ba nhóm đặc trưng; Tomasevic và cộng sự [2] kết hợp tương tác, kết quả và nhân khẩu học; Liu và cộng sự [5] tập trung clickstream VLE ghép với `studentInfo`; còn Gunasekara & Saarela [4] cố ý chỉ dùng **tập con 3 môn** làm benchmark XAI. Pipeline của nhóm, như [1], dùng toàn bộ 32.593 bản ghi với cả ba nhóm đặc trưng.
+Cáº£ bá»‘n nghiÃªn cá»©u dÃ¹ng OULAD [3] khÃ´ng thu tháº­p thÃªm, nhÆ°ng pháº¡m vi khÃ¡c nhau: Adnan vÃ  cá»™ng sá»± [1] dÃ¹ng toÃ n bá»™ vÃ  tÃ­ch há»£p cáº£ ba nhÃ³m Ä‘áº·c trÆ°ng; Tomasevic vÃ  cá»™ng sá»± [2] káº¿t há»£p tÆ°Æ¡ng tÃ¡c, káº¿t quáº£ vÃ  nhÃ¢n kháº©u há»c; Liu vÃ  cá»™ng sá»± [5] táº­p trung clickstream VLE ghÃ©p vá»›i `studentInfo`; cÃ²n Gunasekara & Saarela [4] cá»‘ Ã½ chá»‰ dÃ¹ng **táº­p con 3 mÃ´n** lÃ m benchmark XAI. Pipeline cá»§a nhÃ³m, nhÆ° [1], dÃ¹ng toÃ n bá»™ 32.593 báº£n ghi vá»›i cáº£ ba nhÃ³m Ä‘áº·c trÆ°ng.
 
-### 3.2 Làm sạch
+### 3.2 LÃ m sáº¡ch
 
-Làm sạch nhìn chung nhẹ, nhưng các nghiên cứu khác nhau ở dữ liệu khuyết: Adnan và cộng sự [1] điền trung bình ngày khuyết; Tomasevic và cộng sự [2] **loại mọi dòng có giá trị khuyết** (bài không làm) và chuẩn hoá đặc trưng về [0,1]; Gunasekara & Saarela [4] loại dòng/cột khuyết nhiều, chuẩn hoá và gộp lớp; Liu và cộng sự [5] loại 180 sinh viên không click. Đáng chú ý, **không bài nào coi "chưa nộp bài" là tín hiệu thông tin** — thậm chí [2] loại bỏ đúng những sinh viên đó — khoảng trống mà pipeline của nhóm lấp bằng cờ `not_submitted` thay vì loại bỏ họ.
+LÃ m sáº¡ch nhÃ¬n chung nháº¹, nhÆ°ng cÃ¡c nghiÃªn cá»©u khÃ¡c nhau á»Ÿ dá»¯ liá»‡u khuyáº¿t: Adnan vÃ  cá»™ng sá»± [1] Ä‘iá»n trung bÃ¬nh ngÃ y khuyáº¿t; Tomasevic vÃ  cá»™ng sá»± [2] **loáº¡i má»i dÃ²ng cÃ³ giÃ¡ trá»‹ khuyáº¿t** (bÃ i khÃ´ng lÃ m) vÃ  chuáº©n hoÃ¡ Ä‘áº·c trÆ°ng vá» [0,1]; Gunasekara & Saarela [4] loáº¡i dÃ²ng/cá»™t khuyáº¿t nhiá»u, chuáº©n hoÃ¡ vÃ  gá»™p lá»›p; Liu vÃ  cá»™ng sá»± [5] loáº¡i 180 sinh viÃªn khÃ´ng click. ÄÃ¡ng chÃº Ã½, **khÃ´ng bÃ i nÃ o coi "chÆ°a ná»™p bÃ i" lÃ  tÃ­n hiá»‡u thÃ´ng tin** â€” tháº­m chÃ­ [2] loáº¡i bá» Ä‘Ãºng nhá»¯ng sinh viÃªn Ä‘Ã³ â€” khoáº£ng trá»‘ng mÃ  pipeline cá»§a nhÃ³m láº¥p báº±ng cá» `not_submitted` thay vÃ¬ loáº¡i bá» há».
 
-### 3.3 Tạo đặc trưng
+### 3.3 Táº¡o Ä‘áº·c trÆ°ng
 
-Đây là nơi khác biệt nhất. Adnan và cộng sự [1] giới thiệu **cắt theo thời gian** — tính lại đặc trưng tích luỹ tại các mốc phần trăm thời lượng cố định — là cơ sở trực tiếp cho thiết kế mốc của nhóm (họ dùng 20–100% còn nhóm thêm mốc 10%). Liu và cộng sự [5] cho thấy cách nén click thô thành số đếm theo trang/tuần/tháng. Tomasevic và cộng sự [2] cung cấp cơ sở thực nghiệm cho việc ưu tiên tương tác và kết quả hơn nhân khẩu học.
+ÄÃ¢y lÃ  nÆ¡i khÃ¡c biá»‡t nháº¥t. Adnan vÃ  cá»™ng sá»± [1] giá»›i thiá»‡u **cáº¯t theo thá»i gian** â€” tÃ­nh láº¡i Ä‘áº·c trÆ°ng tÃ­ch luá»¹ táº¡i cÃ¡c má»‘c pháº§n trÄƒm thá»i lÆ°á»£ng cá»‘ Ä‘á»‹nh â€” lÃ  cÆ¡ sá»Ÿ trá»±c tiáº¿p cho thiáº¿t káº¿ má»‘c cá»§a nhÃ³m (há» dÃ¹ng 20â€“100% cÃ²n nhÃ³m thÃªm má»‘c 10%). Liu vÃ  cá»™ng sá»± [5] cho tháº¥y cÃ¡ch nÃ©n click thÃ´ thÃ nh sá»‘ Ä‘áº¿m theo trang/tuáº§n/thÃ¡ng. Tomasevic vÃ  cá»™ng sá»± [2] cung cáº¥p cÆ¡ sá»Ÿ thá»±c nghiá»‡m cho viá»‡c Æ°u tiÃªn tÆ°Æ¡ng tÃ¡c vÃ  káº¿t quáº£ hÆ¡n nhÃ¢n kháº©u há»c.
 
-### 3.4 Phân chia / Kiểm định
+### 3.4 PhÃ¢n chia / Kiá»ƒm Ä‘á»‹nh
 
-Các nghiên cứu dựa vào hold-out ngẫu nhiên hoặc k-fold tiêu chuẩn (10-fold ở [1]; chia ngẫu nhiên 80:20 / 60:20:20 kèm k-fold cho ANN ở [2]; 5-fold ×50 ở [4]); chỉ [1] áp dụng cắt theo thời gian theo từng mốc. Quan trọng, **không bài nào dùng phân chia bảo toàn nhóm** theo sinh viên, nên một sinh viên có nhiều môn–kỳ có thể nằm ở cả train lẫn test — rủi ro rò rỉ mà pipeline của nhóm loại bỏ (mục "Những điều kế thừa").
-
----
-
-## 4. Những điều nhóm kế thừa
-
-- **Dự đoán theo mốc thời gian** [1]: nhóm áp dụng cắt đặc trưng tích luỹ tại các mốc phần trăm thời lượng. Adnan dùng 20/40/60/80/100%; nhóm thêm mốc 10% (10/20/40/60/80/100%) và lấy **40–60%** làm vùng dự đoán sớm đáng tin mà họ báo cáo.
-
-- **Ưu tiên nhóm đặc trưng** [2]: theo phát hiện rằng tương tác và kết quả chiếm ưu thế còn nhân khẩu học đóng góp ít, nhóm tập trung vào nhóm hành vi và kết quả; nhân khẩu học giữ để phân tích công bằng, không dựa vào để dự đoán.
-
-- **Tổng hợp clickstream** [5]: như Liu và cộng sự, nhóm nén clickstream ~10,6 triệu dòng thành đặc trưng/sinh viên gọn (tổng click, ngày hoạt động, số click theo loại, cùng các tỉ lệ phái sinh), nhưng tính **theo từng mốc** cho bối cảnh time-aware.
-
-- **Phòng rò rỉ** [1]: bộ mã hoá, chuẩn hoá và điền khuyết chỉ khớp trên fold huấn luyện, và mọi sự kiện sau mốc bị loại trước khi dựng đặc trưng tại mốc đó — mở rộng kỷ luật thời gian của [1].
-
-- **Phân chia phân tầng bảo toàn nhóm (đóng góp của nhóm)**: khác mọi nghiên cứu khảo sát, nhóm giữ toàn bộ bản ghi của một `id_student` hoàn toàn ở train hoặc test, với tập kiểm tra 20% cố định dùng lại qua các mốc và CV 5-fold × 5 seed trên tập huấn luyện — lấp khoảng trống rò rỉ cấp sinh viên mà các phân chia theo dòng của họ để ngỏ.
-
-- **Định lượng độ ổn định giải thích** [4]: Gunasekara & Saarela đánh giá SHAP/LIME chủ yếu định tính; nhóm thêm chỉ số ổn định định lượng (Jaccard top-*k* + độ lệch chuẩn độ quan trọng đặc trưng), vượt qua đánh giá định tính của họ.
+CÃ¡c nghiÃªn cá»©u dá»±a vÃ o hold-out ngáº«u nhiÃªn hoáº·c k-fold tiÃªu chuáº©n (10-fold á»Ÿ [1]; chia ngáº«u nhiÃªn 80:20 / 60:20:20 kÃ¨m k-fold cho ANN á»Ÿ [2]; 5-fold Ã—50 á»Ÿ [4]); chá»‰ [1] Ã¡p dá»¥ng cáº¯t theo thá»i gian theo tá»«ng má»‘c. Quan trá»ng, **khÃ´ng bÃ i nÃ o dÃ¹ng phÃ¢n chia báº£o toÃ n nhÃ³m** theo sinh viÃªn, nÃªn má»™t sinh viÃªn cÃ³ nhiá»u mÃ´nâ€“ká»³ cÃ³ thá»ƒ náº±m á»Ÿ cáº£ train láº«n test â€” rá»§i ro rÃ² rá»‰ mÃ  pipeline cá»§a nhÃ³m loáº¡i bá» (má»¥c "Nhá»¯ng Ä‘iá»u káº¿ thá»«a").
 
 ---
 
-## Tài liệu tham khảo
+## 4. Nhá»¯ng Ä‘iá»u nhÃ³m káº¿ thá»«a
 
-[1] M. Adnan và cộng sự, "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, tập 9, tr. 7519–7539, 2021.
+- **Dá»± Ä‘oÃ¡n theo má»‘c thá»i gian** [1]: nhÃ³m Ã¡p dá»¥ng cáº¯t Ä‘áº·c trÆ°ng tÃ­ch luá»¹ táº¡i cÃ¡c má»‘c pháº§n trÄƒm thá»i lÆ°á»£ng. Adnan dÃ¹ng 20/40/60/80/100%; nhÃ³m thÃªm má»‘c 10% (10/20/40/60/80/100%) vÃ  láº¥y **40â€“60%** lÃ m vÃ¹ng dá»± Ä‘oÃ¡n sá»›m Ä‘Ã¡ng tin mÃ  há» bÃ¡o cÃ¡o.
 
-[2] N. Tomasevic, N. Gvozdenovic, và S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Education*, tập 143, art. 103676, 2020.
+- **Æ¯u tiÃªn nhÃ³m Ä‘áº·c trÆ°ng** [2]: theo phÃ¡t hiá»‡n ráº±ng tÆ°Æ¡ng tÃ¡c vÃ  káº¿t quáº£ chiáº¿m Æ°u tháº¿ cÃ²n nhÃ¢n kháº©u há»c Ä‘Ã³ng gÃ³p Ã­t, nhÃ³m táº­p trung vÃ o nhÃ³m hÃ nh vi vÃ  káº¿t quáº£; nhÃ¢n kháº©u há»c giá»¯ Ä‘á»ƒ phÃ¢n tÃ­ch cÃ´ng báº±ng, khÃ´ng dá»±a vÃ o Ä‘á»ƒ dá»± Ä‘oÃ¡n.
 
-[3] J. Kuzilek, M. Hlosta, và Z. Zdrahal, "Open University Learning Analytics dataset," *Scientific Data*, tập 4, art. 170171, 2017.
+- **Tá»•ng há»£p clickstream** [5]: nhÆ° Liu vÃ  cá»™ng sá»±, nhÃ³m nÃ©n clickstream ~10,6 triá»‡u dÃ²ng thÃ nh Ä‘áº·c trÆ°ng/sinh viÃªn gá»n (tá»•ng click, ngÃ y hoáº¡t Ä‘á»™ng, sá»‘ click theo loáº¡i, cÃ¹ng cÃ¡c tá»‰ lá»‡ phÃ¡i sinh), nhÆ°ng tÃ­nh **theo tá»«ng má»‘c** cho bá»‘i cáº£nh time-aware.
 
-[4] S. Gunasekara và M. Saarela, "Explainable AI in Education: Techniques and Qualitative Assessment," *Applied Sciences*, tập 15, số 3, art. 1239, 2025.
+- **PhÃ²ng rÃ² rá»‰** [1]: bá»™ mÃ£ hoÃ¡, chuáº©n hoÃ¡ vÃ  Ä‘iá»n khuyáº¿t chá»‰ khá»›p trÃªn fold huáº¥n luyá»‡n, vÃ  má»i sá»± kiá»‡n sau má»‘c bá»‹ loáº¡i trÆ°á»›c khi dá»±ng Ä‘áº·c trÆ°ng táº¡i má»‘c Ä‘Ã³ â€” má»Ÿ rá»™ng ká»· luáº­t thá»i gian cá»§a [1].
 
-[5] Y. Liu, S. Fan, S. Xu, A. Sajjanhar, S. Yeom, và Y. Wei, "Predicting Student Performance Using Clickstream Data and Machine Learning," *Education Sciences*, tập 13, số 1, art. 17, 2023.
+- **PhÃ¢n chia phÃ¢n táº§ng báº£o toÃ n nhÃ³m (Ä‘Ã³ng gÃ³p cá»§a nhÃ³m)**: khÃ¡c má»i nghiÃªn cá»©u kháº£o sÃ¡t, nhÃ³m giá»¯ toÃ n bá»™ báº£n ghi cá»§a má»™t `id_student` hoÃ n toÃ n á»Ÿ train hoáº·c test, vá»›i táº­p kiá»ƒm tra 20% cá»‘ Ä‘á»‹nh dÃ¹ng láº¡i qua cÃ¡c má»‘c vÃ  CV 5-fold Ã— 5 seed trÃªn táº­p huáº¥n luyá»‡n â€” láº¥p khoáº£ng trá»‘ng rÃ² rá»‰ cáº¥p sinh viÃªn mÃ  cÃ¡c phÃ¢n chia theo dÃ²ng cá»§a há» Ä‘á»ƒ ngá».
+
+- **Äá»‹nh lÆ°á»£ng Ä‘á»™ á»•n Ä‘á»‹nh giáº£i thÃ­ch** [4]: Gunasekara & Saarela Ä‘Ã¡nh giÃ¡ SHAP/LIME chá»§ yáº¿u Ä‘á»‹nh tÃ­nh; nhÃ³m thÃªm chá»‰ sá»‘ á»•n Ä‘á»‹nh Ä‘á»‹nh lÆ°á»£ng (Jaccard top-*k* + Ä‘á»™ lá»‡ch chuáº©n Ä‘á»™ quan trá»ng Ä‘áº·c trÆ°ng), vÆ°á»£t qua Ä‘Ã¡nh giÃ¡ Ä‘á»‹nh tÃ­nh cá»§a há».
+
+---
+
+## TÃ i liá»‡u tham kháº£o
+
+[1] M. Adnan vÃ  cá»™ng sá»±, "Predicting at-Risk Students at Different Percentages of Course Length for Early Intervention Using Machine Learning Models," *IEEE Access*, táº­p 9, tr. 7519â€“7539, 2021.
+
+[2] N. Tomasevic, N. Gvozdenovic, vÃ  S. Vranes, "An overview and comparison of supervised data mining techniques for student exam performance prediction," *Computers & Evansonation*, táº­p 143, art. 103676, 2020.
+
+[3] J. Kuzilek, M. Hlosta, vÃ  Z. Zdrahal, "Open University Learning Analytics dataset," *Scientific Data*, táº­p 4, art. 170171, 2017.
+
+[4] S. Gunasekara vÃ  M. Saarela, "Explainable AI in Evansonation: Techniques and Qualitative Assessment," *Applied Sciences*, táº­p 15, sá»‘ 3, art. 1239, 2025.
+
+[5] Y. Liu, S. Fan, S. Xu, A. Sajjanhar, S. Yeom, vÃ  Y. Wei, "Predicting Student Performance Using Clickstream Data and Machine Learning," *Evansonation Sciences*, táº­p 13, sá»‘ 1, art. 17, 2023.
+

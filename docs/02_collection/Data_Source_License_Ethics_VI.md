@@ -1,140 +1,141 @@
-# DSP391m – Nhóm 5
-## Báo cáo 3 – Nhiệm vụ 3 | Thu thập, Làm sạch & Phân tích Dữ liệu
-### Nguồn Dữ liệu, Giấy phép & Các Cân nhắc Đạo đức
+﻿# DSP391m â€“ NhÃ³m 5
+## BÃ¡o cÃ¡o 3 â€“ Nhiá»‡m vá»¥ 3 | Thu tháº­p, LÃ m sáº¡ch & PhÃ¢n tÃ­ch Dá»¯ liá»‡u
+### Nguá»“n Dá»¯ liá»‡u, Giáº¥y phÃ©p & CÃ¡c CÃ¢n nháº¯c Äáº¡o Ä‘á»©c
 
 ---
 
-> **Sản phẩm cần nộp (Bước 30)**
-> Một phần văn bản trình bày: (1) nguồn gốc và xuất xứ (provenance) của bộ dữ liệu OULAD, (2) giấy phép và điều khoản sử dụng áp dụng, và (3) các cân nhắc đạo đức chi phối việc sử dụng bộ dữ liệu trong dự án này. Sẽ được tích hợp vào Mục 3.1 của Báo cáo 2 (Chương 3). Yêu cầu trích dẫn: Kuzilek và cộng sự (2017) và liên kết giấy phép CC-BY 4.0.
+> **Sáº£n pháº©m cáº§n ná»™p (BÆ°á»›c 30)**
+> Má»™t pháº§n vÄƒn báº£n trÃ¬nh bÃ y: (1) nguá»“n gá»‘c vÃ  xuáº¥t xá»© (provenance) cá»§a bá»™ dá»¯ liá»‡u OULAD, (2) giáº¥y phÃ©p vÃ  Ä‘iá»u khoáº£n sá»­ dá»¥ng Ã¡p dá»¥ng, vÃ  (3) cÃ¡c cÃ¢n nháº¯c Ä‘áº¡o Ä‘á»©c chi phá»‘i viá»‡c sá»­ dá»¥ng bá»™ dá»¯ liá»‡u trong dá»± Ã¡n nÃ y. Sáº½ Ä‘Æ°á»£c tÃ­ch há»£p vÃ o Má»¥c 3.1 cá»§a BÃ¡o cÃ¡o 2 (ChÆ°Æ¡ng 3). YÃªu cáº§u trÃ­ch dáº«n: Kuzilek vÃ  cá»™ng sá»± (2017) vÃ  liÃªn káº¿t giáº¥y phÃ©p CC-BY 4.0.
 
 ---
 
-## 1. Nguồn gốc & Xuất xứ Dữ liệu
+## 1. Nguá»“n gá»‘c & Xuáº¥t xá»© Dá»¯ liá»‡u
 
-### 1.1. Tổng quan về Bộ dữ liệu
+### 1.1. Tá»•ng quan vá» Bá»™ dá»¯ liá»‡u
 
-Bộ dữ liệu Phân tích Học tập Đại học Mở (Open University Learning Analytics Dataset – OULAD) là một bộ dữ liệu giáo dục công khai được phát hành bởi Viện Truyền thông Tri thức (Knowledge Media Institute – KMi) thuộc Đại học Mở (The Open University – OU), Vương quốc Anh. Bộ dữ liệu được công bố chính thức vào năm 2017 bởi Kuzilek, Hlosta và Zdrahal dưới dạng một bài mô tả dữ liệu (data descriptor) trên tạp chí *Scientific Data* (thuộc Nhà xuất bản Nature).
+Bá»™ dá»¯ liá»‡u PhÃ¢n tÃ­ch Há»c táº­p Äáº¡i há»c Má»Ÿ (Open University Learning Analytics Dataset â€“ OULAD) lÃ  má»™t bá»™ dá»¯ liá»‡u giÃ¡o dá»¥c cÃ´ng khai Ä‘Æ°á»£c phÃ¡t hÃ nh bá»Ÿi Viá»‡n Truyá»n thÃ´ng Tri thá»©c (Knowledge Media Institute â€“ KMi) thuá»™c Äáº¡i há»c Má»Ÿ (The Open University â€“ OU), VÆ°Æ¡ng quá»‘c Anh. Bá»™ dá»¯ liá»‡u Ä‘Æ°á»£c cÃ´ng bá»‘ chÃ­nh thá»©c vÃ o nÄƒm 2017 bá»Ÿi Kuzilek, Hlosta vÃ  Zdrahal dÆ°á»›i dáº¡ng má»™t bÃ i mÃ´ táº£ dá»¯ liá»‡u (data descriptor) trÃªn táº¡p chÃ­ *Scientific Data* (thuá»™c NhÃ  xuáº¥t báº£n Nature).
 
-OULAD là một trong những bộ dữ liệu mở được trích dẫn rộng rãi nhất trong các cộng đồng nghiên cứu Phân tích Học tập (Learning Analytics) và Khai thác Dữ liệu Giáo dục (Educational Data Mining – EDM). Tính đến năm 2025, bài báo mô tả dữ liệu gốc đã tích lũy được hàng trăm lượt trích dẫn trên các ấn phẩm của IEEE, ACM, Springer và Elsevier.
+OULAD lÃ  má»™t trong nhá»¯ng bá»™ dá»¯ liá»‡u má»Ÿ Ä‘Æ°á»£c trÃ­ch dáº«n rá»™ng rÃ£i nháº¥t trong cÃ¡c cá»™ng Ä‘á»“ng nghiÃªn cá»©u PhÃ¢n tÃ­ch Há»c táº­p (Learning Analytics) vÃ  Khai thÃ¡c Dá»¯ liá»‡u GiÃ¡o dá»¥c (Evansonational Data Mining â€“ EDM). TÃ­nh Ä‘áº¿n nÄƒm 2025, bÃ i bÃ¡o mÃ´ táº£ dá»¯ liá»‡u gá»‘c Ä‘Ã£ tÃ­ch lÅ©y Ä‘Æ°á»£c hÃ ng trÄƒm lÆ°á»£t trÃ­ch dáº«n trÃªn cÃ¡c áº¥n pháº©m cá»§a IEEE, ACM, Springer vÃ  Elsevier.
 
-### 1.2. Bối cảnh Thu thập
+### 1.2. Bá»‘i cáº£nh Thu tháº­p
 
-Bộ dữ liệu được xây dựng từ Môi trường Học tập Ảo (Virtual Learning Environment – VLE) của Đại học Mở, nơi tổ chức các khóa học đào tạo từ xa cho hàng chục nghìn sinh viên mỗi năm. Dữ liệu được lấy từ các năm học 2013 và 2014, bao gồm bảy học phần (module) được chọn, trình bày qua nhiều học kỳ khác nhau.
+Bá»™ dá»¯ liá»‡u Ä‘Æ°á»£c xÃ¢y dá»±ng tá»« MÃ´i trÆ°á»ng Há»c táº­p áº¢o (Virtual Learning Environment â€“ VLE) cá»§a Äáº¡i há»c Má»Ÿ, nÆ¡i tá»• chá»©c cÃ¡c khÃ³a há»c Ä‘Ã o táº¡o tá»« xa cho hÃ ng chá»¥c nghÃ¬n sinh viÃªn má»—i nÄƒm. Dá»¯ liá»‡u Ä‘Æ°á»£c láº¥y tá»« cÃ¡c nÄƒm há»c 2013 vÃ  2014, bao gá»“m báº£y há»c pháº§n (module) Ä‘Æ°á»£c chá»n, trÃ¬nh bÃ y qua nhiá»u há»c ká»³ khÃ¡c nhau.
 
-OU hoạt động theo mô hình đào tạo từ xa hoàn toàn, nghĩa là toàn bộ tương tác giữa sinh viên và khóa học diễn ra theo phương thức kỹ thuật số thông qua VLE. Điều này khiến bộ dữ liệu đặc biệt phù hợp cho nghiên cứu phân tích học tập: mọi hành động của sinh viên — đọc tài liệu, nộp bài kiểm tra, duyệt tài nguyên — đều được ghi lại dưới dạng mục nhật ký (log entry) có dấu thời gian.
+OU hoáº¡t Ä‘á»™ng theo mÃ´ hÃ¬nh Ä‘Ã o táº¡o tá»« xa hoÃ n toÃ n, nghÄ©a lÃ  toÃ n bá»™ tÆ°Æ¡ng tÃ¡c giá»¯a sinh viÃªn vÃ  khÃ³a há»c diá»…n ra theo phÆ°Æ¡ng thá»©c ká»¹ thuáº­t sá»‘ thÃ´ng qua VLE. Äiá»u nÃ y khiáº¿n bá»™ dá»¯ liá»‡u Ä‘áº·c biá»‡t phÃ¹ há»£p cho nghiÃªn cá»©u phÃ¢n tÃ­ch há»c táº­p: má»i hÃ nh Ä‘á»™ng cá»§a sinh viÃªn â€” Ä‘á»c tÃ i liá»‡u, ná»™p bÃ i kiá»ƒm tra, duyá»‡t tÃ i nguyÃªn â€” Ä‘á»u Ä‘Æ°á»£c ghi láº¡i dÆ°á»›i dáº¡ng má»¥c nháº­t kÃ½ (log entry) cÃ³ dáº¥u thá»i gian.
 
-### 1.3. Thành phần Bộ dữ liệu
+### 1.3. ThÃ nh pháº§n Bá»™ dá»¯ liá»‡u
 
-| Bảng | Nội dung | Kích thước xấp xỉ |
+| Báº£ng | Ná»™i dung | KÃ­ch thÆ°á»›c xáº¥p xá»‰ |
 |---|---|---|
-| `studentInfo.csv` | Thông tin nhân khẩu học của sinh viên và kết quả cuối kỳ (`final_result`) | 32,593 bản ghi |
-| `studentRegistration.csv` | Ngày đăng ký học phần và ngày rút môn của từng sinh viên | 32,593 bản ghi |
-| `studentAssessment.csv` | Ngày nộp bài kiểm tra và điểm số | ~173,000 bản ghi |
-| `studentVle.csv` | Nhật ký nhấp chuột hàng ngày (tương tác với các hoạt động trên VLE) | ~10,6 triệu bản ghi |
-| `assessments.csv` | Siêu dữ liệu bài kiểm tra: loại, trọng số, thời hạn | ~173 mục |
-| `vle.csv` | Danh mục các loại hoạt động trên VLE | ~465 mục |
-| `courses.csv` | Thời lượng học phần (tính bằng ngày) theo từng học kỳ | 22 bản ghi |
+| `studentInfo.csv` | ThÃ´ng tin nhÃ¢n kháº©u há»c cá»§a sinh viÃªn vÃ  káº¿t quáº£ cuá»‘i ká»³ (`final_result`) | 32,593 báº£n ghi |
+| `studentRegistration.csv` | NgÃ y Ä‘Äƒng kÃ½ há»c pháº§n vÃ  ngÃ y rÃºt mÃ´n cá»§a tá»«ng sinh viÃªn | 32,593 báº£n ghi |
+| `studentAssessment.csv` | NgÃ y ná»™p bÃ i kiá»ƒm tra vÃ  Ä‘iá»ƒm sá»‘ | ~173,000 báº£n ghi |
+| `studentVle.csv` | Nháº­t kÃ½ nháº¥p chuá»™t hÃ ng ngÃ y (tÆ°Æ¡ng tÃ¡c vá»›i cÃ¡c hoáº¡t Ä‘á»™ng trÃªn VLE) | ~10,6 triá»‡u báº£n ghi |
+| `assessments.csv` | SiÃªu dá»¯ liá»‡u bÃ i kiá»ƒm tra: loáº¡i, trá»ng sá»‘, thá»i háº¡n | ~173 má»¥c |
+| `vle.csv` | Danh má»¥c cÃ¡c loáº¡i hoáº¡t Ä‘á»™ng trÃªn VLE | ~465 má»¥c |
+| `courses.csv` | Thá»i lÆ°á»£ng há»c pháº§n (tÃ­nh báº±ng ngÃ y) theo tá»«ng há»c ká»³ | 22 báº£n ghi |
 
-**Thống kê chính:** 32.593 lượt ghi danh (28.785 sinh viên duy nhất) • 22 tổ hợp học phần–học kỳ • 7 bảng CSV • 10,655,280 lượt tương tác trên VLE
+**Thá»‘ng kÃª chÃ­nh:** 32.593 lÆ°á»£t ghi danh (28.785 sinh viÃªn duy nháº¥t) â€¢ 22 tá»• há»£p há»c pháº§nâ€“há»c ká»³ â€¢ 7 báº£ng CSV â€¢ 10,655,280 lÆ°á»£t tÆ°Æ¡ng tÃ¡c trÃªn VLE
 
-### 1.4. Trích dẫn Chính thức
+### 1.4. TrÃ­ch dáº«n ChÃ­nh thá»©c
 
 > J. Kuzilek, M. Hlosta, and Z. Zdrahal, "Open University Learning Analytics dataset," *Scientific Data*, vol. 4, p. 170171, Nov. 2017, doi: [10.1038/sdata.2017.171](https://doi.org/10.1038/sdata.2017.171).
 
-**Trang chủ bộ dữ liệu chính thức:**
+**Trang chá»§ bá»™ dá»¯ liá»‡u chÃ­nh thá»©c:**
 https://analyse.kmi.open.ac.uk/open_dataset
 
-**Nguồn tải xuống:**
-- [Kaggle — Open University Learning Analytics Dataset](https://www.kaggle.com/datasets/rocki37/open-university-learning-analytics-dataset)
-- [UCI Machine Learning Repository — OULAD](https://archive.ics.uci.edu/dataset/349/open+university+learning+analytics+dataset)
+**Nguá»“n táº£i xuá»‘ng:**
+- [Kaggle â€” Open University Learning Analytics Dataset](https://www.kaggle.com/datasets/rocki37/open-university-learning-analytics-dataset)
+- [UCI Machine Learning Repository â€” OULAD](https://archive.ics.uci.edu/dataset/349/open+university+learning+analytics+dataset)
 
 ---
 
-## 2. Giấy phép & Điều khoản Sử dụng
+## 2. Giáº¥y phÃ©p & Äiá»u khoáº£n Sá»­ dá»¥ng
 
-### 2.1. Loại Giấy phép
+### 2.1. Loáº¡i Giáº¥y phÃ©p
 
-OULAD được phát hành theo **Giấy phép Quốc tế Creative Commons Attribution 4.0 (CC-BY 4.0)**. Đây là một trong những giấy phép mở cho phép nhiều quyền nhất hiện có và được sử dụng rộng rãi trong việc xuất bản dữ liệu khoa học.
+OULAD Ä‘Æ°á»£c phÃ¡t hÃ nh theo **Giáº¥y phÃ©p Quá»‘c táº¿ Creative Commons Attribution 4.0 (CC-BY 4.0)**. ÄÃ¢y lÃ  má»™t trong nhá»¯ng giáº¥y phÃ©p má»Ÿ cho phÃ©p nhiá»u quyá»n nháº¥t hiá»‡n cÃ³ vÃ  Ä‘Æ°á»£c sá»­ dá»¥ng rá»™ng rÃ£i trong viá»‡c xuáº¥t báº£n dá»¯ liá»‡u khoa há»c.
 
-Tham chiếu giấy phép: https://creativecommons.org/licenses/by/4.0/
+Tham chiáº¿u giáº¥y phÃ©p: https://creativecommons.org/licenses/by/4.0/
 
-### 2.2. Những Điều CC-BY 4.0 Cho phép
+### 2.2. Nhá»¯ng Äiá»u CC-BY 4.0 Cho phÃ©p
 
-| Quyền | Chi tiết |
+| Quyá»n | Chi tiáº¿t |
 |---|---|
-| **Chia sẻ** | Sao chép và phân phối lại bộ dữ liệu dưới bất kỳ định dạng hay phương tiện nào. |
-| **Điều chỉnh** | Phối lại, chuyển đổi và xây dựng dựa trên bộ dữ liệu cho bất kỳ mục đích nào, kể cả mục đích thương mại. |
-| **Sử dụng trong nghiên cứu** | Tự do sử dụng trong các dự án nghiên cứu học thuật và ứng dụng mà không bị hạn chế. |
-| **Tái tạo trong ấn phẩm** | Đưa các đoạn trích dữ liệu, bảng biểu và kết quả dẫn xuất vào các báo cáo và bài báo học thuật. |
+| **Chia sáº»** | Sao chÃ©p vÃ  phÃ¢n phá»‘i láº¡i bá»™ dá»¯ liá»‡u dÆ°á»›i báº¥t ká»³ Ä‘á»‹nh dáº¡ng hay phÆ°Æ¡ng tiá»‡n nÃ o. |
+| **Äiá»u chá»‰nh** | Phá»‘i láº¡i, chuyá»ƒn Ä‘á»•i vÃ  xÃ¢y dá»±ng dá»±a trÃªn bá»™ dá»¯ liá»‡u cho báº¥t ká»³ má»¥c Ä‘Ã­ch nÃ o, ká»ƒ cáº£ má»¥c Ä‘Ã­ch thÆ°Æ¡ng máº¡i. |
+| **Sá»­ dá»¥ng trong nghiÃªn cá»©u** | Tá»± do sá»­ dá»¥ng trong cÃ¡c dá»± Ã¡n nghiÃªn cá»©u há»c thuáº­t vÃ  á»©ng dá»¥ng mÃ  khÃ´ng bá»‹ háº¡n cháº¿. |
+| **TÃ¡i táº¡o trong áº¥n pháº©m** | ÄÆ°a cÃ¡c Ä‘oáº¡n trÃ­ch dá»¯ liá»‡u, báº£ng biá»ƒu vÃ  káº¿t quáº£ dáº«n xuáº¥t vÃ o cÃ¡c bÃ¡o cÃ¡o vÃ  bÃ i bÃ¡o há»c thuáº­t. |
 
-### 2.3. Nghĩa vụ Theo CC-BY 4.0
+### 2.3. NghÄ©a vá»¥ Theo CC-BY 4.0
 
-Yêu cầu duy nhất theo CC-BY 4.0 là ghi công (attribution) đúng cách. Dự án này thực hiện nghĩa vụ này bằng cách:
+YÃªu cáº§u duy nháº¥t theo CC-BY 4.0 lÃ  ghi cÃ´ng (attribution) Ä‘Ãºng cÃ¡ch. Dá»± Ã¡n nÃ y thá»±c hiá»‡n nghÄ©a vá»¥ nÃ y báº±ng cÃ¡ch:
 
-1. Trích dẫn bài báo mô tả dữ liệu gốc (Kuzilek và cộng sự, 2017) trong tất cả các phần có tham chiếu đến bộ dữ liệu.
-2. Bao gồm trích dẫn đầy đủ theo định dạng IEEE trong tài liệu này và trong danh mục tài liệu tham khảo của báo cáo cuối cùng.
-3. Nêu rõ loại giấy phép (CC-BY 4.0) trong phần đạo đức này và trong tài liệu tái tạo (reproducibility documentation) (Bước 31).
+1. TrÃ­ch dáº«n bÃ i bÃ¡o mÃ´ táº£ dá»¯ liá»‡u gá»‘c (Kuzilek vÃ  cá»™ng sá»±, 2017) trong táº¥t cáº£ cÃ¡c pháº§n cÃ³ tham chiáº¿u Ä‘áº¿n bá»™ dá»¯ liá»‡u.
+2. Bao gá»“m trÃ­ch dáº«n Ä‘áº§y Ä‘á»§ theo Ä‘á»‹nh dáº¡ng IEEE trong tÃ i liá»‡u nÃ y vÃ  trong danh má»¥c tÃ i liá»‡u tham kháº£o cá»§a bÃ¡o cÃ¡o cuá»‘i cÃ¹ng.
+3. NÃªu rÃµ loáº¡i giáº¥y phÃ©p (CC-BY 4.0) trong pháº§n Ä‘áº¡o Ä‘á»©c nÃ y vÃ  trong tÃ i liá»‡u tÃ¡i táº¡o (reprovansonibility documentation) (BÆ°á»›c 31).
 
-### 2.4. Không Có Hạn chế Bổ sung
+### 2.4. KhÃ´ng CÃ³ Háº¡n cháº¿ Bá»• sung
 
-Bộ dữ liệu không có điều khoản phi thương mại, không yêu cầu chia sẻ tương tự (share-alike), và không có hạn chế cấm tạo tác phẩm phái sinh. OU không đặt thêm điều khoản sử dụng nào ngoài giấy phép CC-BY 4.0. Do đó, bộ dữ liệu có thể được tự do sử dụng, xử lý và báo cáo trong phạm vi dự án luận văn tốt nghiệp học thuật này.
+Bá»™ dá»¯ liá»‡u khÃ´ng cÃ³ Ä‘iá»u khoáº£n phi thÆ°Æ¡ng máº¡i, khÃ´ng yÃªu cáº§u chia sáº» tÆ°Æ¡ng tá»± (share-alike), vÃ  khÃ´ng cÃ³ háº¡n cháº¿ cáº¥m táº¡o tÃ¡c pháº©m phÃ¡i sinh. OU khÃ´ng Ä‘áº·t thÃªm Ä‘iá»u khoáº£n sá»­ dá»¥ng nÃ o ngoÃ i giáº¥y phÃ©p CC-BY 4.0. Do Ä‘Ã³, bá»™ dá»¯ liá»‡u cÃ³ thá»ƒ Ä‘Æ°á»£c tá»± do sá»­ dá»¥ng, xá»­ lÃ½ vÃ  bÃ¡o cÃ¡o trong pháº¡m vi dá»± Ã¡n luáº­n vÄƒn tá»‘t nghiá»‡p há»c thuáº­t nÃ y.
 
 ---
 
-## 3. Các Cân nhắc Đạo đức
+## 3. CÃ¡c CÃ¢n nháº¯c Äáº¡o Ä‘á»©c
 
-### 3.1. Ẩn danh hóa tại Nguồn
+### 3.1. áº¨n danh hÃ³a táº¡i Nguá»“n
 
-OULAD đã được Đại học Mở ẩn danh hóa (anonymisation) trước khi phát hành công khai. Quá trình ẩn danh hóa được áp dụng tại tổ chức nguồn và được mô tả trong bài báo mô tả dữ liệu gốc (Kuzilek và cộng sự, 2017). Cụ thể:
+OULAD Ä‘Ã£ Ä‘Æ°á»£c Äáº¡i há»c Má»Ÿ áº©n danh hÃ³a (anonymisation) trÆ°á»›c khi phÃ¡t hÃ nh cÃ´ng khai. QuÃ¡ trÃ¬nh áº©n danh hÃ³a Ä‘Æ°á»£c Ã¡p dá»¥ng táº¡i tá»• chá»©c nguá»“n vÃ  Ä‘Æ°á»£c mÃ´ táº£ trong bÃ i bÃ¡o mÃ´ táº£ dá»¯ liá»‡u gá»‘c (Kuzilek vÃ  cá»™ng sá»±, 2017). Cá»¥ thá»ƒ:
 
-- Tất cả các định danh cá nhân trực tiếp (tên, địa chỉ email, mã số sinh viên) đã được xóa và thay thế bằng các khóa số tùy ý.
-- Dữ liệu địa lý chỉ được báo cáo ở cấp độ vùng (region), không bao gồm mã bưu chính hay địa chỉ cụ thể.
-- Các chỉ số kinh tế-xã hội (`imd_band`) được báo cáo dưới dạng khoảng phân vị, không phải giá trị chính xác.
-- Tuổi được báo cáo theo nhóm tuổi (0–35, 35–55, 55+), không phải ngày sinh cụ thể.
+- Táº¥t cáº£ cÃ¡c Ä‘á»‹nh danh cÃ¡ nhÃ¢n trá»±c tiáº¿p (tÃªn, Ä‘á»‹a chá»‰ email, mÃ£ sá»‘ sinh viÃªn) Ä‘Ã£ Ä‘Æ°á»£c xÃ³a vÃ  thay tháº¿ báº±ng cÃ¡c khÃ³a sá»‘ tÃ¹y Ã½.
+- Dá»¯ liá»‡u Ä‘á»‹a lÃ½ chá»‰ Ä‘Æ°á»£c bÃ¡o cÃ¡o á»Ÿ cáº¥p Ä‘á»™ vÃ¹ng (region), khÃ´ng bao gá»“m mÃ£ bÆ°u chÃ­nh hay Ä‘á»‹a chá»‰ cá»¥ thá»ƒ.
+- CÃ¡c chá»‰ sá»‘ kinh táº¿-xÃ£ há»™i (`imd_band`) Ä‘Æ°á»£c bÃ¡o cÃ¡o dÆ°á»›i dáº¡ng khoáº£ng phÃ¢n vá»‹, khÃ´ng pháº£i giÃ¡ trá»‹ chÃ­nh xÃ¡c.
+- Tuá»•i Ä‘Æ°á»£c bÃ¡o cÃ¡o theo nhÃ³m tuá»•i (0â€“35, 35â€“55, 55+), khÃ´ng pháº£i ngÃ y sinh cá»¥ thá»ƒ.
 
-Do đó, không có sinh viên nào có thể bị tái nhận dạng (re-identification) từ bộ dữ liệu đã công bố trong điều kiện bình thường. Dự án này không thực hiện bất kỳ nỗ lực tái nhận dạng nào và không kết hợp OULAD với bất kỳ bộ dữ liệu bên ngoài nào có thể cho phép tái nhận dạng.
+Do Ä‘Ã³, khÃ´ng cÃ³ sinh viÃªn nÃ o cÃ³ thá»ƒ bá»‹ tÃ¡i nháº­n dáº¡ng (re-identification) tá»« bá»™ dá»¯ liá»‡u Ä‘Ã£ cÃ´ng bá»‘ trong Ä‘iá»u kiá»‡n bÃ¬nh thÆ°á»ng. Dá»± Ã¡n nÃ y khÃ´ng thá»±c hiá»‡n báº¥t ká»³ ná»— lá»±c tÃ¡i nháº­n dáº¡ng nÃ o vÃ  khÃ´ng káº¿t há»£p OULAD vá»›i báº¥t ká»³ bá»™ dá»¯ liá»‡u bÃªn ngoÃ i nÃ o cÃ³ thá»ƒ cho phÃ©p tÃ¡i nháº­n dáº¡ng.
 
-### 3.2. Tuân thủ Các Nguyên tắc Bảo vệ Dữ liệu
+### 3.2. TuÃ¢n thá»§ CÃ¡c NguyÃªn táº¯c Báº£o vá»‡ Dá»¯ liá»‡u
 
-| Nguyên tắc | Cách Dự án này Tuân thủ |
+| NguyÃªn táº¯c | CÃ¡ch Dá»± Ã¡n nÃ y TuÃ¢n thá»§ |
 |---|---|
-| **Tính hợp pháp & minh bạch** | Bộ dữ liệu công khai theo CC-BY 4.0; không yêu cầu quyền truy cập đặc biệt. |
-| **Giới hạn mục đích** | Dữ liệu chỉ được sử dụng cho nghiên cứu học thuật trong DSP391m; không dùng cho mục đích thương mại hay giám sát. |
-| **Tối thiểu hóa dữ liệu** | Chỉ sử dụng bảy bảng CSV gốc; không thực hiện thu thập dữ liệu bổ sung. |
-| **Tính chính xác** | Dữ liệu nguồn được lưu trữ ở chế độ chỉ đọc (`/data/raw`) với xác minh băm md5 để ngăn chỉnh sửa ngoài ý muốn. |
-| **Giới hạn lưu trữ** | Dữ liệu chỉ được lưu giữ trong suốt thời gian dự án; không chia sẻ ngoài nhóm dự án. |
-| **Không xử lý dữ liệu nhạy cảm** | Không có dữ liệu thuộc danh mục đặc biệt (sức khỏe, tôn giáo, quan điểm chính trị) nào hiện diện hoặc được xử lý. |
+| **TÃ­nh há»£p phÃ¡p & minh báº¡ch** | Bá»™ dá»¯ liá»‡u cÃ´ng khai theo CC-BY 4.0; khÃ´ng yÃªu cáº§u quyá»n truy cáº­p Ä‘áº·c biá»‡t. |
+| **Giá»›i háº¡n má»¥c Ä‘Ã­ch** | Dá»¯ liá»‡u chá»‰ Ä‘Æ°á»£c sá»­ dá»¥ng cho nghiÃªn cá»©u há»c thuáº­t trong DSP391m; khÃ´ng dÃ¹ng cho má»¥c Ä‘Ã­ch thÆ°Æ¡ng máº¡i hay giÃ¡m sÃ¡t. |
+| **Tá»‘i thiá»ƒu hÃ³a dá»¯ liá»‡u** | Chá»‰ sá»­ dá»¥ng báº£y báº£ng CSV gá»‘c; khÃ´ng thá»±c hiá»‡n thu tháº­p dá»¯ liá»‡u bá»• sung. |
+| **TÃ­nh chÃ­nh xÃ¡c** | Dá»¯ liá»‡u nguá»“n Ä‘Æ°á»£c lÆ°u trá»¯ á»Ÿ cháº¿ Ä‘á»™ chá»‰ Ä‘á»c (`/data/raw`) vá»›i xÃ¡c minh bÄƒm md5 Ä‘á»ƒ ngÄƒn chá»‰nh sá»­a ngoÃ i Ã½ muá»‘n. |
+| **Giá»›i háº¡n lÆ°u trá»¯** | Dá»¯ liá»‡u chá»‰ Ä‘Æ°á»£c lÆ°u giá»¯ trong suá»‘t thá»i gian dá»± Ã¡n; khÃ´ng chia sáº» ngoÃ i nhÃ³m dá»± Ã¡n. |
+| **KhÃ´ng xá»­ lÃ½ dá»¯ liá»‡u nháº¡y cáº£m** | KhÃ´ng cÃ³ dá»¯ liá»‡u thuá»™c danh má»¥c Ä‘áº·c biá»‡t (sá»©c khá»e, tÃ´n giÃ¡o, quan Ä‘iá»ƒm chÃ­nh trá»‹) nÃ o hiá»‡n diá»‡n hoáº·c Ä‘Æ°á»£c xá»­ lÃ½. |
 
-### 3.3. Không Cần Yêu cầu Sự đồng ý
+### 3.3. KhÃ´ng Cáº§n YÃªu cáº§u Sá»± Ä‘á»“ng Ã½
 
-Vì OULAD là dữ liệu thứ cấp (secondary data) — được thu thập và ẩn danh hóa bởi bên thứ ba (Đại học Mở) theo khung đạo đức thể chế riêng của họ — dự án này không bắt buộc phải lấy sự đồng ý cá nhân từ các sinh viên được đại diện trong bộ dữ liệu. Việc thu thập dữ liệu ban đầu được thực hiện theo quy trình đạo đức nội bộ của OU, và việc phát hành công khai theo CC-BY 4.0 cấu thành sự ủy quyền của OU cho việc sử dụng nghiên cứu phái sinh.
+VÃ¬ OULAD lÃ  dá»¯ liá»‡u thá»© cáº¥p (secondary data) â€” Ä‘Æ°á»£c thu tháº­p vÃ  áº©n danh hÃ³a bá»Ÿi bÃªn thá»© ba (Äáº¡i há»c Má»Ÿ) theo khung Ä‘áº¡o Ä‘á»©c thá»ƒ cháº¿ riÃªng cá»§a há» â€” dá»± Ã¡n nÃ y khÃ´ng báº¯t buá»™c pháº£i láº¥y sá»± Ä‘á»“ng Ã½ cÃ¡ nhÃ¢n tá»« cÃ¡c sinh viÃªn Ä‘Æ°á»£c Ä‘áº¡i diá»‡n trong bá»™ dá»¯ liá»‡u. Viá»‡c thu tháº­p dá»¯ liá»‡u ban Ä‘áº§u Ä‘Æ°á»£c thá»±c hiá»‡n theo quy trÃ¬nh Ä‘áº¡o Ä‘á»©c ná»™i bá»™ cá»§a OU, vÃ  viá»‡c phÃ¡t hÃ nh cÃ´ng khai theo CC-BY 4.0 cáº¥u thÃ nh sá»± á»§y quyá»n cá»§a OU cho viá»‡c sá»­ dá»¥ng nghiÃªn cá»©u phÃ¡i sinh.
 
-### 3.4. Cam kết Sử dụng có Trách nhiệm
+### 3.4. Cam káº¿t Sá»­ dá»¥ng cÃ³ TrÃ¡ch nhiá»‡m
 
-Ngoài các yêu cầu pháp lý tối thiểu, dự án này cam kết thực hiện các biện pháp sử dụng có trách nhiệm sau:
+NgoÃ i cÃ¡c yÃªu cáº§u phÃ¡p lÃ½ tá»‘i thiá»ƒu, dá»± Ã¡n nÃ y cam káº¿t thá»±c hiá»‡n cÃ¡c biá»‡n phÃ¡p sá»­ dá»¥ng cÃ³ trÃ¡ch nhiá»‡m sau:
 
-1. Bộ dữ liệu chỉ được sử dụng để xây dựng các mô hình dự đoán nhằm hỗ trợ thành công của sinh viên, không nhằm mục đích trừng phạt, giám sát hay phân biệt đối xử với bất kỳ nhóm nào.
-2. Kết quả đầu ra của mô hình sẽ được diễn giải với nhận thức về sai lệch thuật toán (algorithmic bias) tiềm ẩn, đặc biệt liên quan đến các biến nhân khẩu học như `imd_band`, `region` và tình trạng `disability`.
-3. Không có nỗ lực nào được thực hiện nhằm suy luận danh tính cá nhân, liên hệ với sinh viên hay chia sẻ các dự đoán ở cấp độ cá nhân ngoài bối cảnh học thuật của dự án này.
-4. Tất cả các kết quả đầu ra dẫn xuất (bảng đã xử lý, mô hình đã huấn luyện, biểu đồ EDA) sẽ được lưu trữ an toàn và chỉ được truy cập bởi các thành viên trong nhóm dự án.
+1. Bá»™ dá»¯ liá»‡u chá»‰ Ä‘Æ°á»£c sá»­ dá»¥ng Ä‘á»ƒ xÃ¢y dá»±ng cÃ¡c mÃ´ hÃ¬nh dá»± Ä‘oÃ¡n nháº±m há»— trá»£ thÃ nh cÃ´ng cá»§a sinh viÃªn, khÃ´ng nháº±m má»¥c Ä‘Ã­ch trá»«ng pháº¡t, giÃ¡m sÃ¡t hay phÃ¢n biá»‡t Ä‘á»‘i xá»­ vá»›i báº¥t ká»³ nhÃ³m nÃ o.
+2. Káº¿t quáº£ Ä‘áº§u ra cá»§a mÃ´ hÃ¬nh sáº½ Ä‘Æ°á»£c diá»…n giáº£i vá»›i nháº­n thá»©c vá» sai lá»‡ch thuáº­t toÃ¡n (algorithmic bias) tiá»m áº©n, Ä‘áº·c biá»‡t liÃªn quan Ä‘áº¿n cÃ¡c biáº¿n nhÃ¢n kháº©u há»c nhÆ° `imd_band`, `region` vÃ  tÃ¬nh tráº¡ng `disability`.
+3. KhÃ´ng cÃ³ ná»— lá»±c nÃ o Ä‘Æ°á»£c thá»±c hiá»‡n nháº±m suy luáº­n danh tÃ­nh cÃ¡ nhÃ¢n, liÃªn há»‡ vá»›i sinh viÃªn hay chia sáº» cÃ¡c dá»± Ä‘oÃ¡n á»Ÿ cáº¥p Ä‘á»™ cÃ¡ nhÃ¢n ngoÃ i bá»‘i cáº£nh há»c thuáº­t cá»§a dá»± Ã¡n nÃ y.
+4. Táº¥t cáº£ cÃ¡c káº¿t quáº£ Ä‘áº§u ra dáº«n xuáº¥t (báº£ng Ä‘Ã£ xá»­ lÃ½, mÃ´ hÃ¬nh Ä‘Ã£ huáº¥n luyá»‡n, biá»ƒu Ä‘á»“ EDA) sáº½ Ä‘Æ°á»£c lÆ°u trá»¯ an toÃ n vÃ  chá»‰ Ä‘Æ°á»£c truy cáº­p bá»Ÿi cÃ¡c thÃ nh viÃªn trong nhÃ³m dá»± Ã¡n.
 
-### 3.5. Các Rủi ro Đạo đức Tiềm ẩn & Biện pháp Giảm thiểu
+### 3.5. CÃ¡c Rá»§i ro Äáº¡o Ä‘á»©c Tiá»m áº©n & Biá»‡n phÃ¡p Giáº£m thiá»ƒu
 
-| Rủi ro | Khả năng xảy ra | Biện pháp giảm thiểu |
+| Rá»§i ro | Kháº£ nÄƒng xáº£y ra | Biá»‡n phÃ¡p giáº£m thiá»ƒu |
 |---|---|---|
-| Sai lệch thuật toán đối với các nhóm kinh tế-xã hội hoặc nhân khẩu học | Trung bình | Đánh giá hiệu suất mô hình riêng biệt theo từng nhóm nhân khẩu học; báo cáo các chỉ số phân tách. |
-| Lạm dụng dự đoán sinh viên có nguy cơ để trừng phạt thay vì hỗ trợ | Thấp (bối cảnh học thuật) | Xác định rõ ràng tất cả kết quả đầu ra là công cụ hỗ trợ quyết định, không phải quyết định tự động. |
-| Tái nhận dạng thông qua kết hợp dữ liệu | Rất thấp (dữ liệu đã được ẩn danh hóa) | Không có nguồn dữ liệu bên ngoài nào được kết hợp với OULAD trong dự án này. |
-| Rò rỉ dữ liệu hoặc truy cập trái phép | Thấp | Dữ liệu được lưu trữ cục bộ với quyền chỉ đọc; không tải lên các kho lưu trữ công khai. |
+| Sai lá»‡ch thuáº­t toÃ¡n Ä‘á»‘i vá»›i cÃ¡c nhÃ³m kinh táº¿-xÃ£ há»™i hoáº·c nhÃ¢n kháº©u há»c | Trung bÃ¬nh | ÄÃ¡nh giÃ¡ hiá»‡u suáº¥t mÃ´ hÃ¬nh riÃªng biá»‡t theo tá»«ng nhÃ³m nhÃ¢n kháº©u há»c; bÃ¡o cÃ¡o cÃ¡c chá»‰ sá»‘ phÃ¢n tÃ¡ch. |
+| Láº¡m dá»¥ng dá»± Ä‘oÃ¡n sinh viÃªn cÃ³ nguy cÆ¡ Ä‘á»ƒ trá»«ng pháº¡t thay vÃ¬ há»— trá»£ | Tháº¥p (bá»‘i cáº£nh há»c thuáº­t) | XÃ¡c Ä‘á»‹nh rÃµ rÃ ng táº¥t cáº£ káº¿t quáº£ Ä‘áº§u ra lÃ  cÃ´ng cá»¥ há»— trá»£ quyáº¿t Ä‘á»‹nh, khÃ´ng pháº£i quyáº¿t Ä‘á»‹nh tá»± Ä‘á»™ng. |
+| TÃ¡i nháº­n dáº¡ng thÃ´ng qua káº¿t há»£p dá»¯ liá»‡u | Ráº¥t tháº¥p (dá»¯ liá»‡u Ä‘Ã£ Ä‘Æ°á»£c áº©n danh hÃ³a) | KhÃ´ng cÃ³ nguá»“n dá»¯ liá»‡u bÃªn ngoÃ i nÃ o Ä‘Æ°á»£c káº¿t há»£p vá»›i OULAD trong dá»± Ã¡n nÃ y. |
+| RÃ² rá»‰ dá»¯ liá»‡u hoáº·c truy cáº­p trÃ¡i phÃ©p | Tháº¥p | Dá»¯ liá»‡u Ä‘Æ°á»£c lÆ°u trá»¯ cá»¥c bá»™ vá»›i quyá»n chá»‰ Ä‘á»c; khÃ´ng táº£i lÃªn cÃ¡c kho lÆ°u trá»¯ cÃ´ng khai. |
 
 ---
 
-## 4. Tóm tắt
+## 4. TÃ³m táº¯t
 
-> **Tóm tắt Mục 3.1 cho Báo cáo 2**
+> **TÃ³m táº¯t Má»¥c 3.1 cho BÃ¡o cÃ¡o 2**
 >
-> Bộ dữ liệu OULAD (Kuzilek và cộng sự, 2017) được Đại học Mở thu thập từ Môi trường Học tập Ảo trong các năm học 2013–2014, bao gồm 32,593 sinh viên trên 22 tổ hợp học phần–học kỳ. Bộ dữ liệu được công bố theo giấy phép Creative Commons Attribution 4.0 International (CC-BY 4.0), cho phép sử dụng, điều chỉnh và phân phối lại không hạn chế miễn là có ghi công. Trước khi phát hành công khai, OU đã ẩn danh hóa tất cả các định danh cá nhân tại nguồn; không có sinh viên nào có thể bị tái nhận dạng từ các bảng đã công bố. Dự án này sử dụng bộ dữ liệu chỉ dành cho nghiên cứu học thuật trong DSP391m, không áp dụng thu thập dữ liệu bổ sung, và cam kết thực hiện các biện pháp sử dụng có trách nhiệm nhằm ưu tiên phúc lợi của sinh viên và phòng ngừa sai lệch thuật toán.
+> Bá»™ dá»¯ liá»‡u OULAD (Kuzilek vÃ  cá»™ng sá»±, 2017) Ä‘Æ°á»£c Äáº¡i há»c Má»Ÿ thu tháº­p tá»« MÃ´i trÆ°á»ng Há»c táº­p áº¢o trong cÃ¡c nÄƒm há»c 2013â€“2014, bao gá»“m 32,593 sinh viÃªn trÃªn 22 tá»• há»£p há»c pháº§nâ€“há»c ká»³. Bá»™ dá»¯ liá»‡u Ä‘Æ°á»£c cÃ´ng bá»‘ theo giáº¥y phÃ©p Creative Commons Attribution 4.0 International (CC-BY 4.0), cho phÃ©p sá»­ dá»¥ng, Ä‘iá»u chá»‰nh vÃ  phÃ¢n phá»‘i láº¡i khÃ´ng háº¡n cháº¿ miá»…n lÃ  cÃ³ ghi cÃ´ng. TrÆ°á»›c khi phÃ¡t hÃ nh cÃ´ng khai, OU Ä‘Ã£ áº©n danh hÃ³a táº¥t cáº£ cÃ¡c Ä‘á»‹nh danh cÃ¡ nhÃ¢n táº¡i nguá»“n; khÃ´ng cÃ³ sinh viÃªn nÃ o cÃ³ thá»ƒ bá»‹ tÃ¡i nháº­n dáº¡ng tá»« cÃ¡c báº£ng Ä‘Ã£ cÃ´ng bá»‘. Dá»± Ã¡n nÃ y sá»­ dá»¥ng bá»™ dá»¯ liá»‡u chá»‰ dÃ nh cho nghiÃªn cá»©u há»c thuáº­t trong DSP391m, khÃ´ng Ã¡p dá»¥ng thu tháº­p dá»¯ liá»‡u bá»• sung, vÃ  cam káº¿t thá»±c hiá»‡n cÃ¡c biá»‡n phÃ¡p sá»­ dá»¥ng cÃ³ trÃ¡ch nhiá»‡m nháº±m Æ°u tiÃªn phÃºc lá»£i cá»§a sinh viÃªn vÃ  phÃ²ng ngá»«a sai lá»‡ch thuáº­t toÃ¡n.
 
 ---
 
-*DSP391m – Nhóm 5*
+*DSP391m â€“ NhÃ³m 5*
+
