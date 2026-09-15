@@ -1071,6 +1071,15 @@ across explainers for identifiable methodological reasons, and smoothly
 time-varying. They are trustworthy provided they are anchored on SHAP and
 carry their checkpoint label.
 
+
+\section{Phase 3: Actionable Recourse via Diverse Counterfactuals}
+
+While predictive accuracy (Phase 1) and global/local explanations via SHAP (Phase 2) provide necessary transparency, they stop short of providing actionable guidance for students. To address this, the EduGuard system introduces a third phase: Actionable Recourse based on Diverse Counterfactual Explanations.
+
+Instead of merely diagnosing an at-risk student, the system generates a set of minimal, achievable changes to their behavioral features that would flip their prediction to a "safe" (Pass) status. A strict ethical constraint is applied during this generation process: demographic and socioeconomic features (e.g., age, gender, region, disability) are rendered immutable. Actionable recourses are restricted exclusively to behavioral interactions within the Virtual Learning Environment (VLE) and assessment submissions.
+
+By finding the nearest safe medians and constructing multiple alternative plans (e.g., increasing VLE engagement vs. focusing purely on assignment submissions), the system acts as a diagnostic tool that prescribes concrete, data-driven learning plans. This approach transforms the early warning system from a passive alarm into an active intervention mechanism.
+
 \section{Discussion and Limitations}
 
 \textbf{Implications for the literature.}
