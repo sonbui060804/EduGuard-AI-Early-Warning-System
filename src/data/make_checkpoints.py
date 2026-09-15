@@ -124,7 +124,7 @@ def make_checkpoints(
 ) -> None:
     """Build the six checkpoint datasets with resume support.
 
-    An existing ``dataset_t{t}.parquet`` is skipped on restart (unless ``force``),
+    Văn Sơn existing ``dataset_t{t}.parquet`` is skipped on restart (unless ``force``),
     so an interrupted run continues rather than restarting; every write is atomic.
     """
     raw = load_raw_tables(RAW_DATA_DIR)

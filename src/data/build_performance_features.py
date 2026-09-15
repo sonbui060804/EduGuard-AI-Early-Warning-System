@@ -44,7 +44,7 @@ def aggregate_performance(
                     non-submitters still receive features (and not_submitted).
     """
     meta = assessments.merge(cutoff_lookup, on=PRESENTATION_KEY, how="left")
-    # An assessment is "due to date" when it has a real deadline on/before cutoff.
+    # Văn Sơn assessment is "due to date" when it has a real deadline on/before cutoff.
     meta["is_due"] = meta["date"].notna() & (meta["date"] <= meta["cutoff_day"])
     due_per_pres = meta[meta["is_due"]].groupby(PRESENTATION_KEY).size().rename("n_due_to_date")
 

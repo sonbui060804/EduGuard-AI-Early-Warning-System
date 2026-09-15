@@ -1,7 +1,7 @@
 """
 preprocessing.py
 ================
-DSP391m – Nhóm 1  |  Phụ trách: Đức  (Tasks 16–22)
+DSP391m – Nhóm 5  |  Phụ trách: Văn Sơn  (Tasks 16–22)
 
 Nhiệm vụ được bao phủ
 ---------------------
@@ -42,9 +42,9 @@ Quy ước đặt tên đặc trưng phái sinh (Task 22 – thống nhất nhó
   max_clicks_single_day, mean_clicks_per_active_day,
   days_since_last_activity
 
-Cập nhật từ handoff_outliers_for_Duc.csv (Bình → Đức)
+Cập nhật từ handoff_outliers_for_Duc.csv (Huy Anh → Văn Sơn)
 ------------------------------------------------------
-  Bình phát hiện 7 biến có ngoại lai qua IQR. Sau khi đối chiếu:
+  Huy Anh phát hiện 7 biến có ngoại lai qua IQR. Sau khi đối chiếu:
   • 4 biến đã có sẵn trong OUTLIER_STRATEGY (giữ nguyên chiến lược).
   • 1 biến điều chỉnh chiến lược: mean_score_to_date  winsorize → none
     (can_tren=103.15 > 100 chứng tỏ IQR rộng, không có outlier thực sự).
@@ -52,7 +52,7 @@ Cập nhật từ handoff_outliers_for_Duc.csv (Bình → Đức)
       max_clicks_single_day      → log1p   (max=7920, lệch phải mạnh)
       mean_clicks_per_active_day → log1p   (max=1879, lệch phải mạnh)
       days_since_last_activity   → winsorize (chỉ 6 bản ghi, lệch nhẹ)
-  • num_of_prev_attempts: Bình dùng ngưỡng can_tren=2.5 (IQR=0 vì Q1=Q3=0),
+  • num_of_prev_attempts: Huy Anh dùng ngưỡng can_tren=2.5 (IQR=0 vì Q1=Q3=0),
     flag mọi giá trị ≥ 3. Giữ winsorize với limits=(0.01,0.01) – phù hợp
     hơn vì không muốn xoá thông tin "học lại nhiều lần" của at-risk.
 """
@@ -100,7 +100,7 @@ NUMERIC_FEATURES: list[str] = [
     "clicks_quiz",  # continuous– click loại quiz
     "clicks_subpage",  # continuous– click loại subpage
     "clicks_url",  # continuous– click loại url
-    # Tương tác VLE – đặc trưng phái sinh bổ sung (từ handoff Bình → Đức)
+    # Tương tác VLE – đặc trưng phái sinh bổ sung (từ handoff Huy Anh → Văn Sơn)
     "max_clicks_single_day",  # continuous– click tối đa trong 1 ngày tới mốc t
     "mean_clicks_per_active_day",  # continuous– trung bình click/ngày có hoạt động
     "days_since_last_activity",  # continuous– số ngày từ lần tương tác cuối tới mốc t
@@ -314,11 +314,11 @@ def handle_missing(
 #   "none"     – không xử lý (phạm vi tự nhiên, không lệch)
 #
 # [Cập nhật từ handoff_outliers_for_Duc.csv]
-# mean_score_to_date: Bình báo can_tren=103.15 (> giới hạn vật lý 100).
+# mean_score_to_date: Huy Anh báo can_tren=103.15 (> giới hạn vật lý 100).
 #   → IQR rộng đến mức không có outlier thực; chuyển winsorize → none.
 # mean_clicks_per_active_day, max_clicks_single_day: biến mới, lệch phải mạnh → log1p.
 # days_since_last_activity: chỉ 6 bản ghi nhẹ, winsorize đủ.
-# num_of_prev_attempts: Bình dùng IQR=0 nên can_tren=2.5, flag mọi giá trị ≥ 3.
+# num_of_prev_attempts: Huy Anh dùng IQR=0 nên can_tren=2.5, flag mọi giá trị ≥ 3.
 #   → Giữ winsorize(1%): bảo toàn tín hiệu "học lại nhiều lần" quan trọng với at-risk.
 OUTLIER_STRATEGY: dict[str, str] = {
     # VLE clicks – lệch phải rất mạnh
@@ -332,7 +332,7 @@ OUTLIER_STRATEGY: dict[str, str] = {
     "clicks_quiz": "log1p",
     "clicks_subpage": "log1p",
     "clicks_url": "log1p",
-    # VLE – đặc trưng phái sinh mới (từ handoff Bình)
+    # VLE – đặc trưng phái sinh mới (từ handoff Huy Anh)
     "max_clicks_single_day": "log1p",  # max=7920, rất lệch phải
     "mean_clicks_per_active_day": "log1p",  # max=1879, rất lệch phải
     "days_since_last_activity": "winsorize",  # chỉ 6 bản ghi, lệch nhẹ
@@ -359,7 +359,7 @@ def _iqr_mask(s: pd.Series) -> pd.Series:
 def log_outliers(df: pd.DataFrame) -> pd.DataFrame:
     """
     In bảng phát hiện ngoại lai (IQR rule) trước khi xử lý.
-    Dùng trong notebook, phối hợp với boxplot của Bình.
+    Dùng trong notebook, phối hợp với boxplot của Huy Anh.
     """
     rows = []
     for col, strat in OUTLIER_STRATEGY.items():
@@ -821,7 +821,7 @@ if __name__ == "__main__":
             "clicks_quiz": rng.integers(0, 400, n).astype(float),
             "clicks_subpage": rng.integers(0, 700, n).astype(float),
             "clicks_url": rng.integers(0, 500, n).astype(float),
-            # VLE – đặc trưng phái sinh mới (từ handoff Bình)
+            # VLE – đặc trưng phái sinh mới (từ handoff Huy Anh)
             "max_clicks_single_day": rng.integers(0, 8000, n).astype(float),
             "mean_clicks_per_active_day": rng.integers(0, 2000, n).astype(float),
             "days_since_last_activity": rng.integers(0, 80, n).astype(float),

@@ -1,4 +1,4 @@
-"""Automated temporal-leakage and split-integrity tests (Task 14, Khoa).
+"""Automated temporal-leakage and split-integrity tests (Task 14, Vinh Lê).
 
 Guards the two mechanisms that prevent over-optimistic results:
 
