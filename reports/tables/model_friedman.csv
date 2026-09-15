@@ -1,0 +1,5 @@
+metric,t_percent,k_models,n_blocks,friedman_stat,p_value,significant_0.05,best_model,mean_rank_best
+recall,100,5,25,73.8431,3.5000113900161358e-15,True,xgb,1.48
+f1,100,5,25,83.8397,2.6736406526647028e-17,True,lgbm,1.36
+pr_auc,100,5,25,82.6154,4.860897997399591e-17,True,lgbm,1.08
+roc_auc,100,5,25,77.6761,5.40934201253453e-16,True,lgbm,1.04
