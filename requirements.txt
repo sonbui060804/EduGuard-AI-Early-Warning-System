@@ -15,7 +15,7 @@ lightgbm>=4.6
 imbalanced-learn>=0.14.2 # SMOTE, ADASYN
 
 # Explainable AI
-shap>=0.52
+shap>=0.51
 lime>=0.2.0.1
 
 # Visualisation
