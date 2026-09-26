@@ -1,5 +1,7 @@
 # Hướng dẫn cài đặt cho thành viên
 
+**Repository:** <https://github.com/sonbui060804/EduGuard-AI-Early-Warning-System>
+
 Tài liệu này hướng dẫn **từ lúc clone repo về đến khi có đủ toàn bộ dữ liệu** (`data/interim/`, `data/checkpoints/`, `data/splits/`) để bắt đầu làm việc.
 
 > **Vì sao phải làm các bước này?**
@@ -88,7 +90,7 @@ Chạy script để xác nhận bạn tải **đúng phiên bản dữ liệu** 
 python setup_raw_data.py
 ```
 
-Nếu thành công sẽ in: `QUY TRÌNH HOÀN TẤT: 7 tệp đã được kiểm tra...`. So sánh với checksum gốc trong `data/raw/data_manifest.txt` (ví dụ `studentVle.csv` phải là `b8aae6f4ffd1523319aeb56d66b17f72`). Nếu MD5 lệch → bạn tải thiếu/sai file, hãy tải lại.
+Nếu thành công sẽ in: `QUY TRÌNH HOÀN TẤT: 7 tệp đã được kiểm tra...`. Script đối chiếu checksum chuẩn trong `data/oulad_md5_reference.txt` (ví dụ `studentVle.csv` phải là `b8aae6f4ffd1523319aeb56d66b17f72`) và sau đó sinh manifest cục bộ tại `data/raw/data_manifest.txt`. Nếu MD5 lệch → bạn tải thiếu/sai file, hãy tải lại.
 
 ---
 

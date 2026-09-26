@@ -1,21 +1,19 @@
 % EduGuard: AI-Powered Early Warning and Actionable Recourse System for Students
-% DSP391m — Group 5, FPT University · Supervisor: Phan Duy Hùng
+% DSP391m — FPT University · Supervisor: Phan Duy Hùng
 
 
 ---
 
 ## Team Members
 
-Group 5, DSP391m - FPT University. Supervisor: Phan Duy Hùng.
+DSP391m - FPT University. Supervisor: Phan Duy Hùng.
 
 | Member | Role | Responsibility |
 |---|---|---|
-| Văn Vinh | Methodology Lead & Report Coordinator | Time-aware prediction (RQ1), evaluation, report assembly |
-| Ngọc Sang | Modeling Lead | Model development, class-imbalance handling (RQ3) |
-| Huy Anh | XAI Lead | SHAP/LIME explanations, explanation stability (RQ2) |
-| Vinh Lê | Implementation Lead | Data pipeline, split harness, leakage tests |
-| Sang | Backend & Dashboard Lead | Model packaging, Streamlit dashboard |
-| Vinh | Literature Review Lead | Introduction, literature review, references |
+| Văn Sơn | Team Member | Project delivery and analysis support |
+| Ngọc Sang | Team Member | Modeling and pipeline development |
+| Trường Vinh | Team Member | Evaluation, reporting, and documentation |
+| Huy Anh | Team Member | XAI and dashboard support |
 
 
 ---

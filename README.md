@@ -73,7 +73,7 @@ This project uses the **Open University Learning Analytics Dataset (OULAD)** (Ku
 ## 5. Repository Structure
 
 ```text
-time-aware-xai-oulad/
+EduGuard-AI-Early-Warning-System/
 ├── data/
 │   ├── raw/                       # Seven original OULAD CSVs (git-ignored, read-only)
 │   ├── interim/                   # Master table + intermediate parquet (git-ignored)
@@ -166,8 +166,8 @@ The workflow follows the **CRISP-DM** lifecycle and is organised into six phases
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<org-or-user>/time-aware-xai-oulad.git
-cd time-aware-xai-oulad
+git clone https://github.com/sonbui060804/EduGuard-AI-Early-Warning-System.git
+cd EduGuard-AI-Early-Warning-System
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
@@ -222,14 +222,14 @@ This project is designed so that an external reader can reproduce every result:
 
 ## 9. Team & Responsibilities
 
-Group 5, DSP391m — FPT University. Supervisor: **Phan Duy Hùng**.
+DSP391m — FPT University. Supervisor: **Phan Duy Hùng**.
 
 | Member | Role | Responsibility |
 | --- | --- | --- |
-| Vinh Lê | Data Pipeline Lead | Data processing, time-aware splits, leakage prevention |
-| Ngọc Sang | Modeling Lead | Machine learning models (XGBoost, LightGBM), optimization |
-| Bùi Văn Sơn | AI & XAI Lead | Explainability (SHAP/LIME) and Actionable Recourse (Counterfactuals) |
-| Lê Huy Anh | App/Dashboard Lead | Streamlit dashboard, automated intervention UI |
+| Văn Sơn | Team Member | Data analysis and project delivery |
+| Ngọc Sang | Team Member | Modeling and pipeline development |
+| Trường Vinh | Team Member | Reporting and evaluation |
+| Huy Anh | Team Member | XAI and dashboard support |
 
 ## 10. Project Status
 
@@ -239,7 +239,9 @@ Group 5, DSP391m — FPT University. Supervisor: **Phan Duy Hùng**.
 
 **Phase 4–5 — Imbalance Handling + XAI: artifacts in place.** Phase 4 compares no-resampling / class-weighting / SMOTE / ADASYN at t=100%: all four strategies differ only marginally on every accuracy metric (`reports/tables/imbalance_comparison.csv`), and the *explanation* half of RQ3 confirms the same robustness — high pairwise SHAP-ranking correlation for every strategy pair (`reports/tables/xai_stability_strategies.csv`). The benchmark pipeline therefore retains the proposal's SMOTE step, a choice the comparison shows to be immaterial; the Phase-2 progress deck reports the no-resampling baseline rows. Phase 5 delivers SHAP/LIME explanations and their seed/checkpoint stability metrics (`reports/tables/xai_*.csv` + figures).
 
-**Hardening & audit pass (2026-07-12): complete.** Two independent audits were cross-verified and remediated: the frozen split is guarded in code, decision thresholds are now chosen on out-of-fold validation and applied to the held-out test exactly once (`reports/tables/threshold_validation.csv` — the validation-chosen cuts transfer with almost no change), per-subgroup fairness metrics are published (`reports/tables/fairness_subgroups.csv`; max recall gap 6.6 pp on `imd_band`), a banked-assessment flag bug was fixed with a regression test (78/32,593 rows), and raw-data checksums are pinned. The full narrative, per-member Q&A and the pre-submission renumber checklist live in [`reports/guide/SO_TAY_BAO_VE_VI.md`](reports/guide/SO_TAY_BAO_VE_VI.md) (process log: `reports/guide/_process_log_2026-07-12.md`). **Phase 6 — Dashboard + report assembly: in progress.** The Streamlit early-warning dashboard is implemented (`dashboard/app.py`: ranked at-risk list per checkpoint, still-enrolled filter, per-student SHAP explanation labelled with its checkpoint; smoke-tested end-to-end). The Introduction + Literature Review + IEEE references are drafted (`reports/final_report/1_Introduction_and_Literature_Review_EN.md`), and the section-by-section assembly map for the final Word report is at `reports/final_report/00_ASSEMBLY_MAP_VI.md`. Remaining before submission: assemble the final report, sign the Step-0 minutes, and run the renumber checklist.
+**Hardening & audit pass (2026-07-12): complete.** Two independent audits were cross-verified and remediated: the frozen split is guarded in code, decision thresholds are now chosen on out-of-fold validation and applied to the held-out test exactly once (`reports/tables/threshold_validation.csv` — the validation-chosen cuts transfer with almost no change), per-subgroup fairness metrics are published (`reports/tables/fairness_subgroups.csv`; max recall gap 6.6 pp on `imd_band`), a banked-assessment flag bug was fixed with a regression test (78/32,593 rows), and raw-data checksums are pinned. The full narrative, per-member Q&A and the pre-submission renumber checklist live in [`reports/guide/SO_TAY_BAO_VE_VI.md`](reports/guide/SO_TAY_BAO_VE_VI.md) (process log: `reports/guide/_process_log_2026-07-12.md`).
+
+**Phase 6 — Dashboard + report assembly: in progress.** The Streamlit early-warning dashboard is implemented (`dashboard/app.py`: ranked at-risk list per checkpoint, still-enrolled filter, per-student SHAP explanation labelled with its checkpoint; smoke-tested end-to-end). The Introduction + Literature Review + IEEE references are drafted (`reports/final_report/1_Introduction_and_Literature_Review_EN.md`), and the section-by-section assembly map for the final Word report is at `reports/final_report/00_ASSEMBLY_MAP_VI.md`. Remaining before submission: assemble the final report, sign the Step-0 minutes, and run the renumber checklist.
 
 ## 11. Citation
 
@@ -248,10 +250,10 @@ If you use this work, please cite it as:
 ```bibtex
 @misc{group1_2026_timeaware_xai_oulad,
   title        = {EduGuard: AI-Powered Early Warning and Actionable Recourse System for Students},
-  author       = {Vinh and Sang and S{\o}n and Anh},
+  author       = {Văn Sơn and Ngọc Sang and Trường Vinh and Huy Anh},
   howpublished = {DSP391m Data Science Capstone Project, FPT University},
   year         = {2026},
-  note         = {Supervisor: Nguy{\~{\^e}}n Th{\d{i}} Ho{\`a}ng Y{\'{\^e}}n}
+  note         = {Supervisor: Phan Duy Hùng}
 }
 ```
 

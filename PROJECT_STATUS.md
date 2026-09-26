@@ -2,7 +2,7 @@
 
 **Đề tài:** Phát hiện sớm sinh viên có nguy cơ học tập kém bằng học máy có khả năng giải thích
 **Dataset:** OULAD (Open University Learning Analytics Dataset) — 32.593 lượt ghi danh, 28.785 sinh viên duy nhất, 22 module
-**Nhóm:** 6 thành viên (Phúc, Đức, Khoa, Bình, An, Sơn) — Giảng viên hướng dẫn: Phan Duy Hùng
+**Nhóm:** 4 thành viên (Văn Sơn, Ngọc Sang, Trường Vinh, Huy Anh) — Giảng viên hướng dẫn: Phan Duy Hùng
 **Cập nhật:** 2026-07-19
 
 ---

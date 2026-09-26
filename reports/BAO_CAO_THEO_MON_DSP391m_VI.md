@@ -4,11 +4,10 @@
 
 **by**
 
-Trần Bảo Vinh Lê, Phạm Minh Ngọc Sang, Phan Vinh Văn Vinh,
-Nguyễn Thanh Huy Anh, Nguyễn Vũ Huy Anh, Lã Quang Thiên Vinh
+Văn Sơn, Ngọc Sang, Trường Vinh, Huy Anh
 
-Nhóm 5, Sinh viên Đại học FPT
-Giảng viên hướng dẫn: Nguyễn Thị Hoàng Yên
+Sinh viên Đại học FPT
+Giảng viên hướng dẫn: Phan Duy Hùng
 
 > Tài liệu này tuân theo **Data Science Capstone Project Template** (14 mục). Mọi con số truy được về `reports/tables/*.csv` (không gõ tay). Bản báo cáo học thuật dạng IEEE: `paper/main.pdf`.
 
@@ -32,14 +31,12 @@ Phát hiện sớm sinh viên có nguy cơ học tập kém (at-risk) theo thờ
 
 | Thành viên | Vai trò (dự kiến) |
 |---|---|
-| Trần Bảo Vinh Lê | Nhóm trưởng, điều phối |
-| Phạm Minh Ngọc Sang | Dữ liệu & tiền xử lý |
-| Phan Vinh Văn Vinh | Mô hình & đánh giá |
-| Nguyễn Thanh Huy Anh | XAI (SHAP/LIME) |
-| Nguyễn Vũ Sang | EDA & trực quan hóa |
-| Lã Quang Thiên Vinh | Báo cáo & văn liệu |
+| Văn Sơn | Dự án & phân tích |
+| Ngọc Sang | Dữ liệu & mô hình hóa |
+| Trường Vinh | Đánh giá & báo cáo |
+| Huy Anh | XAI & dashboard |
 
-Tất cả thành viên đều là sinh viên Đại học FPT. *(Phân công chi tiết theo `final_exl_4.xlsx` / `Model_Task_Work_Division.docx`.)*
+Tất cả thành viên đều là sinh viên Đại học FPT. Giảng viên hướng dẫn: Phan Duy Hùng.
 
 ## 3. Introduction and Background (Giới thiệu và Bối cảnh)
 
