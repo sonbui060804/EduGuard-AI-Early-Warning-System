@@ -5,7 +5,7 @@ UI mỏng trên các bundle đã huấn luyện — TOÀN BỘ logic nằm trong
 
 Điểm nhấn thiết kế (bản 2 — thân thiện với giảng viên):
   * Tiếng Việt toàn bộ; tên đặc trưng dịch sang ngôn ngữ sư phạm
-    ("Số ngày im lặng", "Điểm tích lũy có trọng số"...).
+    ("Lần cuối hoạt động", "Điểm tích lũy có trọng số"...).
   * Giải thích từng sinh viên bằng CÂU CHỮ: top lý do kèm giá trị thật của em đó
     so với trung vị của lớp — không bắt giảng viên đọc biểu đồ kỹ thuật.
   * Lọc "còn đang học tại mốc t" bật mặc định (phát hiện dual-cohort của đề tài:
@@ -50,6 +50,7 @@ from src.features.preprocessing import (  # noqa: E402
 )
 from src.modeling.predict import load_bundle  # noqa: E402
 from src.xai import shap_explain  # noqa: E402
+from src.xai.recourse import configure_dice, generate_student_recourse  # noqa: E402
 
 KEY = ["code_module", "code_presentation", "id_student"]
 PRES = ["code_module", "code_presentation"]
@@ -57,13 +58,13 @@ MODELS = {"xgb": "XGBoost (khuyên dùng)", "lgbm": "LightGBM", "rf": "Random Fo
 
 # --- Tên đặc trưng thân thiện (ngôn ngữ giảng viên) ---------------------------
 FRIENDLY = {
-    "days_since_last_activity": "Số ngày im lặng (không hoạt động)",
+    "days_since_last_activity": "Lần cuối hoạt động (không hoạt động)",
     "weighted_score_to_date": "Điểm tích lũy có trọng số",
     "mean_score_to_date": "Điểm trung bình các bài đã nộp",
     "n_assessments_submitted": "Số bài đã nộp",
     "not_submitted": "Từng bỏ hạn nộp bài",
     "total_clicks": "Tổng lượt truy cập VLE",
-    "n_days_active": "Số ngày có học",
+    "n_days_active": "số ngày hoạt động",
     "max_clicks_single_day": "Ngày học nhiều nhất (lượt click)",
     "mean_clicks_per_active_day": "Cường độ học mỗi ngày",
     "clicks_forumng": "Truy cập diễn đàn",
@@ -135,6 +136,13 @@ def explainer(model_name: str, t: int):
     return shap_explain.build_explainer(bundle(model_name, t)["model"], None)
 
 
+@st.cache_resource(show_spinner="Đang khởi động thuật toán DiCE...")
+def dice_explainer(model_name: str, t: int):
+    dataset_path = str(RAW_DATA_DIR.parent / "checkpoints" / f"dataset_t{t}.parquet")
+    model_path = str(ROOT / "models" / f"{model_name}_t{t}.joblib")
+    return configure_dice(dataset_path, model_path)
+
+
 @st.cache_data(show_spinner="Đang chấm điểm toàn bộ lớp (chỉ chậm lần đầu) ...")
 def score_cohort(model_name: str, t: int):
     """Chấm test split cố định tại mốc t. Trả (scores, X_raw, Xt, feat_names, medians)."""
@@ -157,7 +165,8 @@ def score_cohort(model_name: str, t: int):
     scores["y_true"] = y.to_numpy()
     scores["still_enrolled"] = still.to_numpy()
     medians = X.median(numeric_only=True)  # trung vị lớp (giá trị thô) để so sánh
-    return scores, X, np.asarray(Xt, dtype=float), list(b["feat_names"]), medians
+    safe_medians_cf = X[y == 0].median(numeric_only=True)
+    return scores, X, np.asarray(Xt, dtype=float), list(b["feat_names"]), medians, safe_medians_cf
 
 
 def shap_row(model_name: str, t: int, Xt_row: np.ndarray, feat_names) -> pd.DataFrame:
@@ -317,11 +326,11 @@ def main() -> None:
                     f"Đang xem **{MODELS[alt]}** để đối chứng — bản vận hành vẫn là XGBoost."
                 )
 
-    scores, X_raw, Xt, feat_names, medians = score_cohort(model_name, t)
+    scores, X_raw, Xt, feat_names, medians, safe_medians_cf = score_cohort(model_name, t)
     view = scores[scores.still_enrolled] if only_active else scores
     flagged = view[view.proba >= threshold].sort_values("proba", ascending=False)
 
-    tab1, tab2, tab3 = st.tabs(["🧑‍🏫 Từng sinh viên (XAI cục bộ)", "🌍 Bức tranh toàn cục", "📋 Kế hoạch Can thiếp (Phase 3)"])
+    tab1, tab2, tab3 = st.tabs(["🧑‍🏫 Từng sinh viên (XAI cục bộ)", "🌍 Bức tranh toàn cục", "📋 Kế hoạch can thiệp bằng DiCE"])
 
     with tab1:
         tp = int(((view.proba >= threshold) & (view.y_true == 1)).sum())
@@ -471,7 +480,7 @@ def main() -> None:
         with g2:
             st.markdown(
                 """
-**Cách đọc:** hai tín hiệu áp đảo là **số ngày im lặng** và **điểm tích lũy** —
+**Cách đọc:** hai tín hiệu áp đảo là **Lần cuối hoạt động** và **điểm tích lũy** —
 đúng trực giác sư phạm: im lặng kéo dài + điểm thấp là cặp dấu hiệu giảng viên
 thật cũng nhìn.
 
@@ -512,22 +521,22 @@ thật cũng nhìn.
 
 
     with tab3:
-        st.subheader("🧠 EduGuard Phase 3 — Kế hoạch Can thiếp Cá nhân")
-        st.markdown("""
-> **Hệ thống hoạt động như một bác sĩ:** không chỉ chẩn đoán sinh viên nào có nguy cơ (Tab 1),
-> giải thích tại sao (Tab 2), mà còn **kê đơn** — chỉ ra chính xác sinh viên cần thay đổi điều gì, bao nhiêu.
-        """)
+        st.subheader("Kế hoạch Can thiệp Cá nhân")
+
+        st.info(
+            f"Note của Vinh: hiện thuật toán đã chạy ổn tuy nhiên giao diện và logic hướng dẫn cho giảng viên cần chỉnh sửa thêm."
+            f"anh em đọc thêm ở file README_Vinh.md (trên github)."
+            )
 
         if flagged.empty:
             st.info("Không có sinh viên nào bị gắn cờ hiện tại — chọn mốc thời gian hoặc hạ ngưỡng ở Tab 1.")
         else:
             st.info(
-                f"⚠️ Đây là phiên bản demo của module Counterfactual (Phase 3 - EduGuard). "
                 f"Kế hoạch được tính toán dựa trên giá trị tại mốc **{t}%** khóa học."
             )
 
             pick_cf = st.selectbox(
-                "Chọn sinh viên cần tạo kế hoạch can thiếp",
+                "Chọn sinh viên cần tạo kế hoạch can thiệp",
                 flagged.index,
                 format_func=lambda i: (
                     f"SV {scores.loc[i, 'id_student']} — "
@@ -539,19 +548,31 @@ thật cũng nhìn.
 
             student_raw_cf = X_raw.loc[pick_cf]
             p_cf = float(scores.loc[pick_cf, "proba"])
-            st.markdown(f"### 📌 Xác suất nguy cơ hiện tại: **{p_cf:.0%}**")
+            st.markdown(f"### Xác suất nguy cơ hiện tại: **{p_cf:.0%}**")
             st.progress(p_cf, text=f"Mức nguy cơ tại mốc {t}%")
 
             st.divider()
-            st.markdown("### 📋 Kế hoạch Can thiếp (Đa phương án)")
-            st.caption(
-                "⚙️ Lưu ý: Chỉ những yếu tố **hành vi** (click, nộp bài...) mới được gợi ý thay đổi. "
-                "Nhân khẩu học (tuổi, giới tính, vùng...) là bất biến — không được chạm vào (ràng buộc đạo đức)."
-            )
+            st.markdown("### Kế hoạch can thiệp:")
+            st.caption("Lưu ý: Chỉ những chỉ số như số lần truy cập, nộp bài, ... mới có thể được thay đổi.")
+            with st.expander("Xem giải thích chi tiết các chỉ số"):
+                st.markdown(
+                    """
+                    - **Tổng lượt truy cập VLE**: Số lượt bấm chuột của sinh viên trên VLE (hệ thống bài giảng ảo).
+                    - **Số ngày hoạt động**: Số ngày mà sinh viên đăng nhập và hoạt động trên VLE.
+                    - **Cường độ học mỗi ngày**: Tính bằng tổng lượt truy cập VLE của sinh viên chia cho số ngày hoạt động.
+                    - **Lần cuối hoạt động**: Thời gian (tính bằng ngày) kể từ lần cuối sinh viên hoạt động trên VLE.
+                    - **Truy cập bài giảng**: Số lượt bấm vào xem các bài giảng trên VLE.
+                    - **Truy cập tài liệu**: Số lượt bấm vào xem hoặc tải xuống các tài liệu.
+                    - **Truy cập diễn đàn**: Số lượt đăng bài, hoặc xem trao đổi trên VLE.
+                    - **Số bài đã nộp**: Số lượng các bài tập/ bài kiểm tra mà sinh viên đã nộp.
+                    - **Tổng lần bỏ hạn nộp**: Số lượng các bài tập/ bài kiểm tra mà sinh viên quá hạn không nộp.
+                    - **Điểm tích lũy có trọng số**: Đây là con số quan trọng nhất đánh giá năng lực thực tế, được tính bằng tổng số điểm của các bài tập/ bài kiểm tra đã nộp (thang điểm 100) nhân với trọng số của các bài đó.
+                    """
+                )
 
             ACTIONABLE_RAW = {
                 "total_clicks":               ("Tổng lượt truy cập VLE",       "tăng"),
-                "n_days_active":              ("Số ngày có học",                "tăng"),
+                "n_days_active":              ("Số ngày hoạt động",                "tăng"),
                 "mean_clicks_per_active_day": ("Cường độ học mỗi ngày", "tăng"),
                 "clicks_forumng":             ("Truy cập diễn đàn",             "tăng"),
                 "clicks_oucontent":           ("Truy cập bài giảng",                "tăng"),
@@ -559,7 +580,7 @@ thật cũng nhìn.
                 "n_assessments_submitted":    ("Số bài đã nộp",            "tăng"),
                 "weighted_score_to_date":     ("Điểm tích lũy có trọng số", "tăng"),
                 "not_submitted":              ("Tổng lần bỏ hạn nộp",       "giảm"),
-                "days_since_last_activity":   ("Số ngày im lặng",                    "giảm"),
+                "days_since_last_activity":   ("Lần cuối hoạt động",                    "giảm"),
             }
 
             current_vals = {}
@@ -568,77 +589,64 @@ thật cũng nhìn.
                 if val is not None and pd.notna(val):
                     current_vals[feat] = float(val)
 
-            try:
-                _, test_df_cf = load_checkpoint_split(t)
-                X_all_cf, y_all_cf = make_X_y(test_df_cf)
-                safe_medians_cf = X_all_cf[y_all_cf == 0].median(numeric_only=True)
-            except Exception:
-                safe_medians_cf = medians
+            with st.spinner(f"Chạy thuật toán DiCE (XAI) (mốc {t}%)..."):
+                try:
+                    exp = dice_explainer(model_name, t)
+                    cfs_obj = generate_student_recourse(exp, student_raw_cf.to_frame().T, num_cfs=3, safe_medians=safe_medians_cf.to_dict())
+                except Exception as e:
+                    st.error(f"Lỗi module DiCE: {e}")
+                    cfs_obj = None
 
-            def make_plan_cf(feats_up, feats_down, factor_up=1.0, factor_down=0.5):
-                plan = {}
-                for feat in feats_up:
-                    cur = current_vals.get(feat, 0.0)
-                    target = float(safe_medians_cf.get(feat, cur * 1.5 * factor_up))
-                    if target > cur:
-                        plan[feat] = (cur, target, "tăng")
-                for feat in feats_down:
-                    cur = current_vals.get(feat, 0.0)
-                    target = max(0.0, float(safe_medians_cf.get(feat, cur * factor_down)))
-                    if target < cur:
-                        plan[feat] = (cur, target, "giảm")
-                return plan
+            if cfs_obj is not None:
+                final_cfs_df = cfs_obj.cf_examples_list[0].final_cfs_df
+                if 'at_risk' in final_cfs_df.columns:
+                    final_cfs_df = final_cfs_df.drop(columns=['at_risk'])
 
-            plans_cf = [
-                (
-                    "🟥 Phương án A — Tăng cường Tham gia Hoạt động",
-                    make_plan_cf(
-                        ["total_clicks", "n_days_active", "clicks_oucontent", "clicks_forumng"],
-                        ["days_since_last_activity", "not_submitted"]
-                    )
-                ),
-                (
-                    "🟦 Phương án B — Tập trung Hoàn thành Bài kiểm tra",
-                    make_plan_cf(
-                        ["n_assessments_submitted", "weighted_score_to_date", "mean_clicks_per_active_day"],
-                        ["not_submitted"]
-                    )
-                ),
-                (
-                    "🟨 Phương án C — Thay đổi Tối thiểu (Dễ thực hiện nhất)",
-                    make_plan_cf(
-                        ["total_clicks", "n_days_active"],
-                        ["days_since_last_activity", "not_submitted"],
-                        factor_up=0.8, factor_down=0.4
-                    )
-                ),
-            ]
+                cols_cf = st.columns(len(final_cfs_df))
+                for idx, col_cf in enumerate(cols_cf):
+                    plan_cf = final_cfs_df.iloc[idx]
+                    with col_cf:
+                        st.markdown(f"#### Phương án DiCE {idx + 1}")
+                        changes_made = False
+                        for feat, (label, direction) in ACTIONABLE_RAW.items():
+                            if feat in plan_cf:
+                                cur_val = float(student_raw_cf.get(feat, 0))
+                                tgt_val = float(plan_cf[feat])
+                                delta = tgt_val - cur_val
+                                if abs(delta) > 0.01:
+                                    changes_made = True
+                                    arrow = "↑" if delta > 0 else "↓"
+                                    icon = "🟢" if (delta > 0 and direction == "tăng") or (delta < 0 and direction == "giảm") else "🟨"
+                                    
+                                    # Ép kiểu nguyên cho các đặc trưng đếm
+                                    is_count = feat in COUNT_LIKE or feat == "days_since_last_activity" or feat == "not_submitted"
+                                    if is_count:
+                                        cur_val = round(cur_val)
+                                        # Lên kế hoạch thì dùng trần/sàn tuỳ vào hướng để tạo hành động cụ thể hơn
+                                        tgt_val = int(tgt_val)
+                                        if tgt_val == cur_val and direction == "tăng": tgt_val = cur_val + 1
+                                        elif tgt_val == cur_val and direction == "giảm": tgt_val = cur_val - 1
+                                        delta = tgt_val - cur_val
 
-            cols_cf = st.columns(3)
-            for col_cf, (plan_name, plan_actions) in zip(cols_cf, plans_cf):
-                with col_cf:
-                    st.markdown(f"#### {plan_name}")
-                    if not plan_actions:
-                        st.success("Sinh viên đã gần đạt mức an toàn!")
-                    else:
-                        for feat, (cur_val, tgt_val, direction) in plan_actions.items():
-                            label, _ = ACTIONABLE_RAW.get(feat, (feat, ""))
-                            delta = tgt_val - cur_val
-                            arrow = "↑" if delta > 0 else "↓"
-                            c_fmt = f"{cur_val:,.0f}" if cur_val == int(cur_val) else f"{cur_val:,.1f}"
-                            t_fmt = f"{tgt_val:,.0f}" if tgt_val == int(tgt_val) else f"{tgt_val:,.1f}"
-                            d_fmt = f"{abs(delta):,.0f}" if abs(delta) == int(abs(delta)) else f"{abs(delta):,.1f}"
-                            icon = "🟢" if direction == "tăng" else "🔴"
-                            st.markdown(
-                                f"{icon} **{label}**  \n"
-                                f"Hiện tại: `{c_fmt}` → Mục tiêu: **`{t_fmt}`** &nbsp;`({arrow}{d_fmt})`"
-                            )
-                            max_val = float(safe_medians_cf.get(feat, tgt_val + 1))
-                            if max_val > 0:
-                                st.progress(min(tgt_val / max_val, 1.0))
+                                    c_fmt = f"{cur_val:,.0f}" if cur_val == int(cur_val) else f"{cur_val:,.1f}"
+                                    t_fmt = f"{tgt_val:,.0f}" if tgt_val == int(tgt_val) else f"{tgt_val:,.1f}"
+                                    d_fmt = f"{abs(delta):,.0f}" if abs(delta) == int(abs(delta)) else f"{abs(delta):,.1f}"
+                                    
+                                    st.markdown(
+                                        f"{icon} **{label}**  \n"
+                                        f"Hiện tại: `{c_fmt}` → Mục tiêu: **`{t_fmt}`** &nbsp;`({arrow}{d_fmt})`"
+                                    )
+                        if not changes_made:
+                            st.success("Không cần thay đổi hành vi.")
+            else:
+                st.error("Hệ thống DiCE không tìm ra các phương án khắc phục cho sinh viên này.")
+                st.info(
+                    f"Sinh viên này có mức độ rủi ro quá cao ({p_cf:.0%}). "
+                    "Giảng viên nên trao đổi trực tiếp với sinh viên ngay lập tức."
+                )
 
             st.divider()
-            st.markdown("### 💬 Hướng dẫn Sư phạm dành cho Giảng viên")
+            st.markdown("### Hướng dẫn dành cho giảng viên:")
             sr_cf = shap_row(model_name, t, Xt[pick_cf], feat_names)
             top_feat_raw_cf, _ = raw_feature_of(sr_cf.iloc[0]["feature"])
             top_label_cf = FRIENDLY.get(top_feat_raw_cf, top_feat_raw_cf)
@@ -647,31 +655,29 @@ thật cũng nhìn.
 
             if top_feat_raw_cf == "days_since_last_activity" and top_val_cf is not None:
                 advice_cf = (
-                    f"🚨 **[Ư U TIÊN CAO]** Em này đã không có hoạt động trong **{int(float(top_val_cf))} ngày**. "
-                    "Giảng viên nên gửi tin nhắn cá nhân trong vòng **24 giờ** và đề xuất lịch tư vấn. "
-                    "Mục tiêu: phá vỡ sự im lặng trước khi qua hạn nộp bài tiếp theo."
+                    f"Sinh viên không có hoạt động trong **{int(float(top_val_cf))} ngày**. "
+                    "Giảng viên nên liên hệ với sinh viên để hỗ trợ. "
                 )
             elif top_feat_raw_cf == "not_submitted" and top_val_cf is not None and float(top_val_cf) >= 1:
                 advice_cf = (
-                    f"📋 **[HÀNH ĐỘNG]** Em đã bỏ qua **{int(float(top_val_cf))} lần** hạn nộp. "
-                    "Giảng viên có thể thương lượng gia hạn nộp muộn hoặc bài tự luyện thay thế."
+                    f"Sinh viên đã bỏ qua **{int(float(top_val_cf))} lần** hạn nộp. "
+                    "Giảng viên có thể đề xuất gia hạn bài tập, cho phép sinh viên nộp muộn hoặc gỡ điểm."
                 )
             elif top_feat_raw_cf in ["weighted_score_to_date", "mean_score_to_date"] and top_val_cf is not None and top_med_cf is not None:
                 advice_cf = (
-                    f"📖 **[HỐ TRỢ HỌC THUẬT]** Điểm tích lũy của em (**{float(top_val_cf):.1f}**) "
-                    f"thấp hơn trung vị lớp (**{float(top_med_cf):.1f}**). "
+                    f"Điểm tích lũy của sinh viên là (**{float(top_val_cf):.1f}**), thấp hơn trung vị lớp (**{float(top_med_cf):.1f}**). "
                     "Giảng viên nên giới thiệu em đến trung tâm hỗ trợ học tập."
                 )
             else:
                 advice_cf = (
-                    f"💬 **[THEO DÕI]** Yếu tố chính cần xem lại là **{top_label_cf}**. "
+                    f"Yếu tố chính cần xem lại là **{top_label_cf}**. "
                     "Giảng viên nên tiếp cận em để hiểu nguyên nhân cụ thể và trao đổi "
                     "kế hoạch học tập trong 1–2 tuần tới."
                 )
 
             st.info(advice_cf)
 
-            with st.expander("📊 Xem chi tiết giá trị hiện tại so với nhóm SV an toàn"):
+            with st.expander("Xem chi tiết giá trị hiện tại so với nhóm SV an toàn"):
                 cf_rows = {}
                 for feat, (label, direction) in ACTIONABLE_RAW.items():
                     val = student_raw_cf.get(feat, None)
@@ -689,8 +695,7 @@ thật cũng nhìn.
             st.caption(
                 "ℹ️ Các phương án trên được tính theo phương pháp Counterfactual Explanations "
                 "(DiCE - Diverse Counterfactual Explanations, Mothilal et al. 2020, ACM FAccT). "
-                "Giá trị đích là median của nhóm SV an toàn tại mốc này. "
-                "Các đặc trưng bất biến (tuổi, giới tính, vùng...) không được chỉnh sửa."
+                "Giá trị đích là trung vị của nhóm sinh viên an toàn tại mốc này. "
             )
 
 
@@ -700,7 +705,7 @@ def smoke() -> None:
         sys.stdout.reconfigure(encoding="utf-8")  # ponytail: console Windows không vỡ tiếng Việt
     except Exception:
         pass
-    scores, X_raw, Xt, feat_names, medians = score_cohort("xgb", 40)
+    scores, X_raw, Xt, feat_names, medians, _ = score_cohort("xgb", 40)
     assert len(scores) == len(X_raw) == Xt.shape[0] > 6000
     assert Xt.shape[1] == len(feat_names)
     assert scores["proba"].between(0, 1).all()
