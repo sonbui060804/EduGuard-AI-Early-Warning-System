@@ -519,13 +519,13 @@ thật cũng nhìn.
             )
 
 
-
+#-----------------------------------------------------------------------------------------------------------------------------
     with tab3:
         st.subheader("Kế hoạch Can thiệp Cá nhân")
 
         st.info(
-            f"Note của Vinh: hiện thuật toán đã chạy ổn tuy nhiên giao diện và logic hướng dẫn cho giảng viên cần chỉnh sửa thêm."
-            f"anh em đọc thêm ở file README_Vinh.md (trên github)."
+            f"Note của Vinh: hiện thuật toán đã chạy ổn tuy nhiên giao diện và logic hướng dẫn cho giảng viên cần chỉnh sửa thêm. "
+            f"Anh em đọc thêm ở file README_Vinh.md (trên github)."
             )
 
         if flagged.empty:
@@ -551,25 +551,6 @@ thật cũng nhìn.
             st.markdown(f"### Xác suất nguy cơ hiện tại: **{p_cf:.0%}**")
             st.progress(p_cf, text=f"Mức nguy cơ tại mốc {t}%")
 
-            st.divider()
-            st.markdown("### Kế hoạch can thiệp:")
-            st.caption("Lưu ý: Chỉ những chỉ số như số lần truy cập, nộp bài, ... mới có thể được thay đổi.")
-            with st.expander("Xem giải thích chi tiết các chỉ số"):
-                st.markdown(
-                    """
-                    - **Tổng lượt truy cập VLE**: Số lượt bấm chuột của sinh viên trên VLE (hệ thống bài giảng ảo).
-                    - **Số ngày hoạt động**: Số ngày mà sinh viên đăng nhập và hoạt động trên VLE.
-                    - **Cường độ học mỗi ngày**: Tính bằng tổng lượt truy cập VLE của sinh viên chia cho số ngày hoạt động.
-                    - **Lần cuối hoạt động**: Thời gian (tính bằng ngày) kể từ lần cuối sinh viên hoạt động trên VLE.
-                    - **Truy cập bài giảng**: Số lượt bấm vào xem các bài giảng trên VLE.
-                    - **Truy cập tài liệu**: Số lượt bấm vào xem hoặc tải xuống các tài liệu.
-                    - **Truy cập diễn đàn**: Số lượt đăng bài, hoặc xem trao đổi trên VLE.
-                    - **Số bài đã nộp**: Số lượng các bài tập/ bài kiểm tra mà sinh viên đã nộp.
-                    - **Tổng lần bỏ hạn nộp**: Số lượng các bài tập/ bài kiểm tra mà sinh viên quá hạn không nộp.
-                    - **Điểm tích lũy có trọng số**: Đây là con số quan trọng nhất đánh giá năng lực thực tế, được tính bằng tổng số điểm của các bài tập/ bài kiểm tra đã nộp (thang điểm 100) nhân với trọng số của các bài đó.
-                    """
-                )
-
             ACTIONABLE_RAW = {
                 "total_clicks":               ("Tổng lượt truy cập VLE",       "tăng"),
                 "n_days_active":              ("Số ngày hoạt động",                "tăng"),
@@ -589,94 +570,158 @@ thật cũng nhìn.
                 if val is not None and pd.notna(val):
                     current_vals[feat] = float(val)
 
-            with st.spinner(f"Chạy thuật toán DiCE (XAI) (mốc {t}%)..."):
-                try:
-                    exp = dice_explainer(model_name, t)
-                    cfs_obj = generate_student_recourse(exp, student_raw_cf.to_frame().T, num_cfs=3, safe_medians=safe_medians_cf.to_dict())
-                except Exception as e:
-                    st.error(f"Lỗi module DiCE: {e}")
-                    cfs_obj = None
+            # bước 1: xác định xem sinh viên có dấu hiệu bỏ học không
+            tc = float(student_raw_cf.get("total_clicks", 0))
+            score = float(student_raw_cf.get("weighted_score_to_date", 0))
+            notsub = float(student_raw_cf.get("not_submitted", 0))
+            days_inactive = float(student_raw_cf.get("days_since_last_activity", 0))
+            
+            is_ghost = (t >= 40) and ((tc == 0) or (score == 0 and notsub >= 1 and days_inactive >= 30))
+            
+            if is_ghost:
+                st.error("Báo động đỏ: Sinh viên có dấu hiệu bỏ học hoàn toàn. Kịch bản DiCE không còn khả thi, "
+                         "giảng viên nên liên hệ trực tiếp đến sinh viên.")
+                
+                with st.expander("Xem chi tiết thông số gốc (Nhóm Ghost)"):
+                    cf_rows = {}
+                    for feat, (label, direction) in ACTIONABLE_RAW.items():
+                        val = student_raw_cf.get(feat, None)
+                        safe_val = safe_medians_cf.get(feat, None)
+                        if val is not None and pd.notna(val):
+                            gap = float(safe_val) - float(val) if safe_val is not None else None
+                            cf_rows[label] = {
+                                "Giá trị hiện tại": f"{float(val):,.1f}",
+                                "Median SV an toàn": f"{float(safe_val):,.1f}" if safe_val is not None else "N/A",
+                                "Khoảng cách": f"{gap:+.1f}" if gap is not None else "N/A",
+                            }
+                    st.dataframe(pd.DataFrame(cf_rows).T, use_container_width=True)
 
-            if cfs_obj is not None:
-                final_cfs_df = cfs_obj.cf_examples_list[0].final_cfs_df
-                if 'at_risk' in final_cfs_df.columns:
-                    final_cfs_df = final_cfs_df.drop(columns=['at_risk'])
+            # bước 2: nếu sinh viên tiếp tục học, chạy thuật toán DiCE
+            else:
+                with st.spinner(f"Chạy thuật toán DiCE (XAI) (mốc {t}%)..."):
+                    try:
+                        exp = dice_explainer(model_name, t)
+                        cfs_obj = generate_student_recourse(exp, student_raw_cf.to_frame().T, num_cfs=3, safe_medians=safe_medians_cf.to_dict())
+                    except Exception as e:
+                        st.error(f"Lỗi module DiCE: {e}")
+                        cfs_obj = None
 
-                cols_cf = st.columns(len(final_cfs_df))
-                for idx, col_cf in enumerate(cols_cf):
-                    plan_cf = final_cfs_df.iloc[idx]
-                    with col_cf:
-                        st.markdown(f"#### Phương án DiCE {idx + 1}")
-                        changes_made = False
-                        for feat, (label, direction) in ACTIONABLE_RAW.items():
-                            if feat in plan_cf:
-                                cur_val = float(student_raw_cf.get(feat, 0))
-                                tgt_val = float(plan_cf[feat])
-                                delta = tgt_val - cur_val
-                                if abs(delta) > 0.01:
-                                    changes_made = True
-                                    arrow = "↑" if delta > 0 else "↓"
-                                    icon = "🟢" if (delta > 0 and direction == "tăng") or (delta < 0 and direction == "giảm") else "🟨"
-                                    
-                                    # Ép kiểu nguyên cho các đặc trưng đếm
-                                    is_count = feat in COUNT_LIKE or feat == "days_since_last_activity" or feat == "not_submitted"
-                                    if is_count:
-                                        cur_val = round(cur_val)
-                                        # Lên kế hoạch thì dùng trần/sàn tuỳ vào hướng để tạo hành động cụ thể hơn
-                                        tgt_val = int(tgt_val)
-                                        if tgt_val == cur_val and direction == "tăng": tgt_val = cur_val + 1
-                                        elif tgt_val == cur_val and direction == "giảm": tgt_val = cur_val - 1
+                if cfs_obj is not None:
+                    final_cfs_df = cfs_obj.cf_examples_list[0].final_cfs_df
+                    if 'at_risk' in final_cfs_df.columns:
+                        final_cfs_df = final_cfs_df.drop(columns=['at_risk'])
+
+                    # Hiệu chỉnh (1): Tách các Mục tiêu cốt lõi (Core Goals)
+                    st.markdown("### Mục tiêu cốt lõi (chung cho tất cả sinh viên)")
+                    st.info("Dựa trên độ quan trọng của đặc trưng (SHAP), sinh viên cần ưu tiên cải thiện 3 chỉ số sau:")
+                    c_g_1, c_g_2, c_g_3 = st.columns(3)
+                    
+                    # Tính mục tiêu chung từ DiCE plan đầu tiên (vì core goals thường tương đồng)
+                    base_plan = final_cfs_df.iloc[0]
+                    
+                    # Goal 1: Lần cuối hoạt động
+                    cur_days = float(student_raw_cf.get("days_since_last_activity", 0))
+                    tgt_days = int(base_plan.get("days_since_last_activity", 0))
+                    if tgt_days == int(cur_days): tgt_days = max(0, int(cur_days) - 1)
+                    
+                    # Goal 2: Điểm tích lũy
+                    cur_score = float(student_raw_cf.get("weighted_score_to_date", 0))
+                    tgt_score = float(base_plan.get("weighted_score_to_date", 0))
+                    if tgt_score == cur_score: tgt_score = min(100.0, cur_score + 5.0)
+
+                    # Goal 3: Số bài tập không nộp
+                    cur_notsub = float(student_raw_cf.get("not_submitted", 0))
+                    tgt_notsub = float(base_plan.get("not_submitted", 0))
+                    
+                    if cur_notsub > 0:
+                        if tgt_notsub >= cur_notsub: 
+                            tgt_notsub = max(0, cur_notsub - 1)
+                        c_g_1.metric("Lần cuối hoạt động (cần giảm)", f"{cur_days:,.0f} ngày", f"{(tgt_days - cur_days):,.0f} ngày", delta_color="normal")
+                        c_g_2.metric("Điểm tích lũy (cần tăng)", f"{cur_score:,.1f}", f"+{max(0, tgt_score - cur_score):.1f} điểm", delta_color="normal")
+                        c_g_3.metric("Số lần bỏ nộp (cần giảm)", f"{cur_notsub:,.0f} bài", f"{(tgt_notsub - cur_notsub):,.0f} bài", delta_color="normal")
+                    else:
+                        c_g_1.metric("Lần cuối hoạt động (cần giảm)", f"{cur_days:,.0f} ngày", f"{(tgt_days - cur_days):,.0f} ngày", delta_color="normal")
+                        c_g_2.metric("Điểm tích lũy (cần tăng)", f"{cur_score:,.1f}", f"+{max(0, tgt_score - cur_score):.1f} điểm", delta_color="normal")
+                        c_g_3.metric("Số bài bỏ nộp", f"0 bài", "Đạt", delta_color="off")
+
+                    st.markdown("---")
+                    st.markdown("### Đề xuất Kịch bản DiCE:")
+                    
+                    advices = []
+                    # Lấy kịch bản tối ưu nhất (CF đầu tiên) làm cơ sở tính toán chính
+                    plan_cf = final_cfs_df.iloc[0]
+                    
+                    # nếu sinh viên vẫn học nhưng điểm thấp hoặc bỏ nộp bài: cần nộp bù bài và chủ động hỏi giảng viên hoặc trên diễn đàn
+                    is_rescue = score < float(safe_medians_cf.get("weighted_score_to_date", 50)) and notsub > 0
+                    if is_rescue:
+                        advices.append("**Cứu vãn điểm số:** Sinh viên cần nộp bù bài tập / bài kiểm tra còn thiếu. Đây là điều kiện tiên quyết để vớt điểm trung bình tích lũy. "
+                                        "Sinh viên nên tham khảo diễn đàn hoặc hỏi trực tiếp giảng viên để được hướng dẫn hoàn thành các bài còn thiếu.")
+                    
+                    # nếu sinh viên không bỏ nộp bài -> có thể đang hổng lý thuyết. cần củng cố kiến thức 
+                    else:
+                        cur_ouc = float(student_raw_cf.get("clicks_oucontent", 0))
+                        tgt_ouc = float(plan_cf.get("clicks_oucontent", 0))
+                        if tgt_ouc - cur_ouc > 5:
+                            advices.append(f"**Ưu tiên 1 (Củng cố kiến thức):** Tăng cường truy cập xem tài liệu/video bài giảng (cần thêm khoảng {tgt_ouc - cur_ouc:.0f} tương tác) để bù đắp hổng lý thuyết.")
+                        
+                        cur_intensity = float(student_raw_cf.get("mean_clicks_per_active_day", 0))
+                        tgt_intensity = float(plan_cf.get("mean_clicks_per_active_day", 0))
+                        if tgt_intensity - cur_intensity > 1:
+                            prefix = "Ưu tiên 2" if advices else "Ưu tiên 1"
+                            advices.append(f"**{prefix} (Tăng cường độ học):** Nâng cao tương tác mỗi ngày (phấn đấu lên {tgt_intensity:.0f} lượt/ngày) để theo sát nhịp độ học tập với tập thể.")
+                    
+                    if not advices:
+                        tgt_tc = float(plan_cf.get("total_clicks", 0))
+                        cur_tc = float(student_raw_cf.get("total_clicks", 0))
+                        if tgt_tc > cur_tc:
+                            advices.append(f"**Mục tiêu Khởi động:** Sinh viên cần truy cập VLE để theo kịp nội dung môn học mới.")
+                        else:
+                            advices.append("**Chiến lược Nước rút:** Tạm thời duy trì cường độ hiện tại. Dồn toàn lực vào ôn luyện kiểm tra vì các chỉ số phụ đã an toàn.")
+                            
+                    for ad in advices:
+                        st.markdown(f"- {ad}")
+                        
+                    with st.expander("Xem chi tiết 3 kịch bản tính toán gốc từ DiCE"):                      
+                        cols_raw = st.columns(len(final_cfs_df))
+                        for idx_raw, col_raw in enumerate(cols_raw):
+                            with col_raw:
+                                st.markdown(f"**Kịch bản {idx_raw + 1}**")
+                                raw_plan = final_cfs_df.iloc[idx_raw]
+                                changes_made = False
+                                for feat, (label, direction) in ACTIONABLE_RAW.items():
+                                    if feat in ["days_since_last_activity", "weighted_score_to_date"]: 
+                                        continue
+                                    if feat in raw_plan:
+                                        cur_val = float(student_raw_cf.get(feat, 0))
+                                        tgt_val = float(raw_plan[feat])
                                         delta = tgt_val - cur_val
+                                        if abs(delta) > 0.01:
+                                            changes_made = True
+                                            arrow = "↑" if delta > 0 else "↓"
+                                            
+                                            is_count = feat in COUNT_LIKE or feat == "not_submitted"
+                                            if is_count:
+                                                cur_val = round(cur_val)
+                                                tgt_val = int(tgt_val)
+                                                if tgt_val == cur_val and direction == "tăng": tgt_val = cur_val + 1
+                                                elif tgt_val == cur_val and direction == "giảm": tgt_val = cur_val - 1
+                                                delta = tgt_val - cur_val
+                                            
+                                            c_fmt = f"{cur_val:,.0f}" if cur_val == int(cur_val) else f"{cur_val:,.1f}"
+                                            t_fmt = f"{tgt_val:,.0f}" if tgt_val == int(tgt_val) else f"{tgt_val:,.1f}"
+                                            d_fmt = f"{abs(delta):,.0f}" if abs(delta) == int(abs(delta)) else f"{abs(delta):,.1f}"
+                                            
+                                            st.markdown(
+                                                f"- **{label}**: `{t_fmt}` ({arrow}{d_fmt})"
+                                            )
+                                if not changes_made:
+                                    st.caption("Chỉ yêu cầu thay đổi Mục tiêu cốt lõi.")
 
-                                    c_fmt = f"{cur_val:,.0f}" if cur_val == int(cur_val) else f"{cur_val:,.1f}"
-                                    t_fmt = f"{tgt_val:,.0f}" if tgt_val == int(tgt_val) else f"{tgt_val:,.1f}"
-                                    d_fmt = f"{abs(delta):,.0f}" if abs(delta) == int(abs(delta)) else f"{abs(delta):,.1f}"
-                                    
-                                    st.markdown(
-                                        f"{icon} **{label}**  \n"
-                                        f"Hiện tại: `{c_fmt}` → Mục tiêu: **`{t_fmt}`** &nbsp;`({arrow}{d_fmt})`"
-                                    )
-                        if not changes_made:
-                            st.success("Không cần thay đổi hành vi.")
-            else:
-                st.error("Hệ thống DiCE không tìm ra các phương án khắc phục cho sinh viên này.")
-                st.info(
-                    f"Sinh viên này có mức độ rủi ro quá cao ({p_cf:.0%}). "
-                    "Giảng viên nên trao đổi trực tiếp với sinh viên ngay lập tức."
-                )
-
+                else:
+                    st.error("Báo động đỏ: Sinh viên có dấu hiệu bỏ học hoàn toàn. Kịch bản DiCE không còn khả thi, "
+                         "giảng viên nên liên hệ trực tiếp đến sinh viên.")
+            
             st.divider()
-            st.markdown("### Hướng dẫn dành cho giảng viên:")
-            sr_cf = shap_row(model_name, t, Xt[pick_cf], feat_names)
-            top_feat_raw_cf, _ = raw_feature_of(sr_cf.iloc[0]["feature"])
-            top_label_cf = FRIENDLY.get(top_feat_raw_cf, top_feat_raw_cf)
-            top_val_cf = student_raw_cf.get(top_feat_raw_cf, None)
-            top_med_cf = medians.get(top_feat_raw_cf, None)
-
-            if top_feat_raw_cf == "days_since_last_activity" and top_val_cf is not None:
-                advice_cf = (
-                    f"Sinh viên không có hoạt động trong **{int(float(top_val_cf))} ngày**. "
-                    "Giảng viên nên liên hệ với sinh viên để hỗ trợ. "
-                )
-            elif top_feat_raw_cf == "not_submitted" and top_val_cf is not None and float(top_val_cf) >= 1:
-                advice_cf = (
-                    f"Sinh viên đã bỏ qua **{int(float(top_val_cf))} lần** hạn nộp. "
-                    "Giảng viên có thể đề xuất gia hạn bài tập, cho phép sinh viên nộp muộn hoặc gỡ điểm."
-                )
-            elif top_feat_raw_cf in ["weighted_score_to_date", "mean_score_to_date"] and top_val_cf is not None and top_med_cf is not None:
-                advice_cf = (
-                    f"Điểm tích lũy của sinh viên là (**{float(top_val_cf):.1f}**), thấp hơn trung vị lớp (**{float(top_med_cf):.1f}**). "
-                    "Giảng viên nên giới thiệu em đến trung tâm hỗ trợ học tập."
-                )
-            else:
-                advice_cf = (
-                    f"Yếu tố chính cần xem lại là **{top_label_cf}**. "
-                    "Giảng viên nên tiếp cận em để hiểu nguyên nhân cụ thể và trao đổi "
-                    "kế hoạch học tập trong 1–2 tuần tới."
-                )
-
-            st.info(advice_cf)
-
             with st.expander("Xem chi tiết giá trị hiện tại so với nhóm SV an toàn"):
                 cf_rows = {}
                 for feat, (label, direction) in ACTIONABLE_RAW.items():

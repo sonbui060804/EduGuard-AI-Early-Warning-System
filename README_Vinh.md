@@ -25,5 +25,12 @@
    * Viết thêm Unit Test (kiểm thử đơn vị) để chạy thử nghiệm kịch bản DiCE ở tất cả các mốc `t={10, 20, 40, ...}` để đảm bảo không bị crash khi có dữ liệu format lạ.
 2. **Triển khai phương pháp tối ưu hơn cho DiCE:** 
    * Tùy chọn `method="random"` hiện tại hoạt động khá nhanh trên Streamlit nhưng tối ưu chưa tốt, ngoài ra phương án DiCE có sự thay đổi với mỗi lần chạy mô hình (kết quả không cố định). Có thể thử cài đặt `method="genetic"` hoặc `kdtree`
-3. **Sửa lại hướng dẫn cho giảng viên:**
-   * Hiện hướng dẫn gần như mặc định là sinh viên không hoạt động bao nhiêu ngày, giảng viên cần liên hệ trực tiếp, ... trong khi thực tế là còn rất nhiều việc khác giảng viên cần làm. Sẽ bổ sung thêm trong tương lai
+
+---
+
+## Cập nhật phân hệ Kế hoạch Sư phạm (1/10):
+
+Hệ thống đã triển khai logic sư phạm thay vì các con số máy móc thuần túy từ thuật toán DiCE:
+1. **Lọc sinh viên Ghost (t >= 40%):** Tự động phát hiện sinh viên đã bỏ học (truy cập = 0, hoặc Điểm = 0 + không nộp bài + không hoạt động > 30 ngày) để phát **Báo động đỏ**, yêu cầu giảng viên gọi điện thay vì đưa ra kịch bản DiCE vô nghĩa.
+2. **Loại bỏ 3 kịch bản trùng lặp:** Hợp nhất kết quả từ DiCE thành một bộ **Khuyến nghị Hành động** duy nhất, gán theo mức Ưu tiên (Ưu tiên 1, 2) một cách tường minh, rất dễ sử dụng cho giảng viên.
+3. **Tracking 3 "Core Goals" tĩnh:** Phân tách rõ Lần cuối hoạt động, Điểm tích lũy, và Số lần bỏ nộp bài thành 3 ô Metrics dễ quan sát, kèm theo hiệu ứng định hướng (màu Xanh khi âm số bài chưa nộp/ ngày ko hoạt động).
