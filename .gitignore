@@ -17,7 +17,6 @@ data/checkpoints/
 *.pkl
 # Trained model bundles are regenerable from src.modeling.train (benchmark) — only
 # a deliberately-packaged final model should be versioned, not the 30 checkpoints.
-*.joblib
 # Large data archive / local ClickHouse binary (too big for git, regenerable)
 data.zip
 clickhouse
@@ -72,5 +71,3 @@ task/
 ~$*
 # LibreOffice lock files
 .~lock.*#
-# Bootstrap cache for tools.make_paper_extras (final CSVs are committed).
-reports/tables/_paper_cache/

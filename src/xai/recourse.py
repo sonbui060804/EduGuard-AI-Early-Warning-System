@@ -68,7 +68,7 @@ def configure_dice(dataset_path: str, model_path: str):
     wrapper = EduGuardModelWrapper(bundle)
     m = dice_ml.Model(model=wrapper, backend="sklearn")
     
-    # Random method works efficiently for scikit-learn models as a baseline
+    # Random method works efficiently for scikit-learn models as a baseline. Genetic method makes the model crash instantly
     exp = dice_ml.Dice(d, m, method="random") 
     
     return exp
@@ -125,7 +125,8 @@ def generate_student_recourse(exp, student_df: pd.DataFrame, num_cfs: int = 3, s
             total_CFs=num_cfs, 
             desired_class=0,
             features_to_vary=actionable_features,
-            permitted_range=permitted_range
+            permitted_range=permitted_range,
+            random_seed=42
         )
         return dice_exp
     except Exception as e:
